@@ -16,6 +16,15 @@ int main() {
 
     host.printf("Application started\r\n");
 
-    nfc_start(i2c);
-    ble_start();
+    while (true) {
+        host.printf("Scanning for NFC card\r\n");
+        nfc_start(i2c);
+        host.printf("NFC card found and authorised\r\n");
+
+        host.printf("Scanning for beacons\r\n");
+        ble_start();
+        host.printf("Ending beacon scan\r\n");
+
+        host.printf("Restarting system...\r\n");
+    }
 }

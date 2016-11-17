@@ -3,8 +3,9 @@
 #include "PN532.h"
 #include "PN532_I2C.h"
 
-bool authoriseCard() {
-    return false;
+bool authoriseCard(uint8_t uid[7]) {
+    // check card id against auth server...
+    return true;
 }
 
 void waitForTarget(PN532 nfc) {
@@ -18,17 +19,7 @@ void waitForTarget(PN532 nfc) {
         success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, &uid[0], &uidLength);
 
         if (success) {
-            // check and set authorised value
-            authorised = authoriseCard();
-
-            // host.printf("Found a card!\r\n");
-            // host.printf("UID Length: %d bytes\r\n", uidLength);
-            //
-            // host.printf("UID Value: 0x00");
-            // for (uint8_t i = 0; i < uidLength; i++) {
-            //     host.printf("%02X", uid[i]);
-            // }
-            // host.printf("\r\n");
+            authorised = authoriseCard(uid);
         }
     }
 }
@@ -36,8 +27,10 @@ void waitForTarget(PN532 nfc) {
 void nfc_start(I2C i2c) {
     PN532_I2C pn532 = PN532_I2C(i2c);
     PN532 nfc = PN532(pn532);
+
     nfc.begin();
     nfc.SAMConfig();
+    nfc.setPassiveActivationRetries(0x00);
 
     waitForTarget(nfc);
 }
