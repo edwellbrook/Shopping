@@ -1,4 +1,6 @@
 *.DS_Store
 *.pyc
-/BUILD
-/mbed_settings.py
+BUILD
+mbed_settings.py
+bin
+pkg
