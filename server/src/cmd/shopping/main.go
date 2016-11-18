@@ -34,6 +34,10 @@ func authoriseCard(cardId []byte) {
 	}
 }
 
+func foundBeacon(beaconId string) {
+	log.Printf("Found beacon: %s", beaconId)
+}
+
 func parseInput(input []byte) {
 	response := serial_api.Parse(input)
 
@@ -49,6 +53,11 @@ func parseInput(input []byte) {
 		if len(response.Args) == 1 {
 			cardId := []byte(response.Args[0])
 			authoriseCard(cardId)
+		}
+
+	case serial_api.SCAN:
+		if len(response.Args) == 1 {
+			foundBeacon(response.Args[0])
 		}
 
 	default:
