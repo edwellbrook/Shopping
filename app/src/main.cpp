@@ -15,6 +15,14 @@ bool auth(uint8_t uid[7]) {
     return host.getc() == 1;
 }
 
+void sendBeacons(char beaconId[]) {
+    host.printf("SCAN:");
+    for (int i = 0; i < 12; i++) {
+        host.printf("%c", beaconId[i]);
+    }
+    host.printf("\r\n");
+}
+
 int main() {
     Ticker ticker;
     ticker.attach(tickerCallback, 1);
@@ -27,7 +35,7 @@ int main() {
         host.printf("INFO:NFC card found and authorised\r\n");
 
         host.printf("INFO:Scanning for beacons\r\n");
-        ble_start();
+        ble_start(sendBeacons);
         host.printf("INFO:Ending beacon scan\r\n");
 
         host.printf("INFO:Restarting system...\r\n");

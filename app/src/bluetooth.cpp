@@ -1,18 +1,21 @@
 #include "bluetooth.h"
-
 #include "ble/BLE.h"
-#include "ble/Gap.h"
+#include <stdio.h>
+
+SendBeaconsFn sendBeacons;
 
 void scan(const Gap::AdvertisementCallbackParams_t *params) {
-    if (params->type != GapAdvertisingParams::ADV_NON_CONNECTABLE_UNDIRECTED) {
+    if (params->rssi < -40) {
         return;
     }
 
+    char address[Gap::ADDR_LEN * 2];
+
     for (int i = Gap::ADDR_LEN - 1; i >= 0; i--) {
-        // host.printf ("%2.2x", params->peerAddr[i]);
+        sprintf(&address[i * 2], "%2.2x", params->peerAddr[i]);
     }
 
-    // host.printf(" Got advertisement (%i) with rssi: %i\r\n", params->advertisingDataLen, params->rssi);
+    sendBeacons(address);
 }
 
 void init(BLE::InitializationCompleteCallbackContext *params) {
@@ -22,7 +25,9 @@ void init(BLE::InitializationCompleteCallbackContext *params) {
     ble.gap().startScan(scan);
 }
 
-void ble_start() {
+void ble_start(SendBeaconsFn fn) {
+    sendBeacons = fn;
+
     BLE &ble = BLE::Instance();
     ble.init(init);
 
