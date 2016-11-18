@@ -8,9 +8,6 @@ const (
 	// system has initialised
 	INIT = "INIT"
 
-	// system is exiting
-	EXIT = "EXIT"
-
 	// system has requested help
 	HELP = "HELP"
 
