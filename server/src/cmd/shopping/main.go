@@ -23,8 +23,10 @@ func authoriseCard(cardId []byte) {
 	// just check against literal
 	if bytes.Equal([]byte{131, 20, 142, 171, 45, 195, 1}, cardId) {
 		response = []byte{1}
+		mqtt_publish("/auth/accepted", cardId)
 	} else {
 		response = []byte{0}
+		mqtt_publish("/auth/denied", cardId)
 	}
 
 	if _, err := serialPort.Write(response); err != nil {
