@@ -5,9 +5,13 @@ import (
 	"errors"
 	"flag"
 	"log"
+	"serial_api"
+	"strings"
 
 	"github.com/tarm/serial"
 )
+
+var serialPort *serial.Port
 
 type Config struct {
 	SerialName string
@@ -32,6 +36,29 @@ func appConfig() (*Config, error) {
 	return conf, nil
 }
 
+func parseInput(input []byte) {
+	response := serial_api.Parse(input)
+
+	switch response.Type {
+	case serial_api.INIT:
+		log.Println("Application starting")
+	case serial_api.EXIT:
+		log.Println("Application exiting")
+	case serial_api.INFO:
+		msg := strings.Join(response.Args, " ")
+		log.Println(msg)
+	case serial_api.AUTH:
+		log.Println("Application asking for auth")
+		if _, err := serialPort.Write([]byte{'1'}); err != nil {
+			log.Println("Failed to write auth response")
+		} else {
+			log.Println("Wrote auth response %d", 1)
+		}
+	default:
+		log.Printf("Application sent unhandled message: %s\n", response.Type)
+	}
+}
+
 func main() {
 	config, err := appConfig()
 	if err != nil {
@@ -43,18 +70,19 @@ func main() {
 		Baud: config.SerialBaud,
 	}
 
-	port, err := serial.OpenPort(serialConfig)
+	serialPort, err = serial.OpenPort(serialConfig)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer port.Close()
+	defer serialPort.Close()
 
-	reader := bufio.NewReader(port)
+	reader := bufio.NewReader(serialPort)
 	for {
 		line, _, err := reader.ReadLine()
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Printf("%q", line)
+
+		parseInput(line)
 	}
 }

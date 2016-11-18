@@ -1,3 +1,5 @@
 #include "mbed.h"
 
-void nfc_start(I2C i2c);
+typedef bool (*AuthFn)(uint8_t[7]);
+
+void nfc_start(I2C i2c, AuthFn auth);

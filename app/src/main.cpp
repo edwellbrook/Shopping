@@ -10,21 +10,28 @@ void tickerCallback() {
     led = !led;
 }
 
+bool auth(uint8_t uid[7]) {
+    host.printf("AUTH:%s", uid);
+    host.printf("INFO:%d", host.getc());
+
+    return true;
+}
+
 int main() {
     Ticker ticker;
     ticker.attach(tickerCallback, 1);
 
-    host.printf("Application started\r\n");
+    host.printf("INIT\r\n");
 
     while (true) {
-        host.printf("Scanning for NFC card\r\n");
-        nfc_start(i2c);
-        host.printf("NFC card found and authorised\r\n");
+        host.printf("INFO:Scanning for NFC card\r\n");
+        nfc_start(i2c, &auth);
+        host.printf("INFO:NFC card found and authorised\r\n");
 
-        host.printf("Scanning for beacons\r\n");
+        host.printf("INFO:Scanning for beacons\r\n");
         ble_start();
-        host.printf("Ending beacon scan\r\n");
+        host.printf("INFO:Ending beacon scan\r\n");
 
-        host.printf("Restarting system...\r\n");
+        host.printf("INFO:Restarting system...\r\n");
     }
 }
