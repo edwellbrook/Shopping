@@ -2,39 +2,16 @@ package main
 
 import (
 	"bufio"
-	"errors"
-	"flag"
 	"log"
 	"serial_api"
 	"strings"
 
 	"github.com/tarm/serial"
+	mqtt_client "github.com/yosssi/gmq/mqtt/client"
 )
 
 var serialPort *serial.Port
-
-type Config struct {
-	SerialName string
-	SerialBaud int
-}
-
-func appConfig() (*Config, error) {
-	conf := &Config{}
-
-	name := flag.String("com", "", "COM port for transferring data")
-	baud := flag.Int("baud", 9600, "Baud rate for COM port")
-
-	flag.Parse()
-
-	if *name == "" {
-		return conf, errors.New("A COM port must be specified")
-	}
-
-	conf.SerialName = *name
-	conf.SerialBaud = *baud
-
-	return conf, nil
-}
+var mqttClient *mqtt_client.Client
 
 func parseInput(input []byte) {
 	response := serial_api.Parse(input)
@@ -49,7 +26,7 @@ func parseInput(input []byte) {
 		log.Println(msg)
 	case serial_api.AUTH:
 		log.Println("Application asking for auth")
-		if _, err := serialPort.Write([]byte{'1'}); err != nil {
+		if _, err := serialPort.Write([]byte("1")); err != nil {
 			log.Println("Failed to write auth response")
 		} else {
 			log.Println("Wrote auth response %d", 1)
@@ -59,24 +36,9 @@ func parseInput(input []byte) {
 	}
 }
 
-func main() {
-	config, err := appConfig()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	serialConfig := &serial.Config{
-		Name: config.SerialName,
-		Baud: config.SerialBaud,
-	}
-
-	serialPort, err = serial.OpenPort(serialConfig)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer serialPort.Close()
-
+func processSerial() {
 	reader := bufio.NewReader(serialPort)
+
 	for {
 		line, _, err := reader.ReadLine()
 		if err != nil {
@@ -85,4 +47,26 @@ func main() {
 
 		parseInput(line)
 	}
+}
+
+func main() {
+	config, err := appConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	serialPort, err = serial.OpenPort(config.Serial)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer serialPort.Close()
+
+	mqttClient = mqtt_client.New(&mqtt_client.Options{})
+	err = mqttClient.Connect(config.MQTT)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer mqttClient.Terminate()
+
+	processSerial()
 }

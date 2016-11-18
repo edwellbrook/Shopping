@@ -12,9 +12,7 @@ void tickerCallback() {
 
 bool auth(uint8_t uid[7]) {
     host.printf("AUTH:%s", uid);
-    host.printf("INFO:%d", host.getc());
-
-    return true;
+    return host.getc();
 }
 
 int main() {
@@ -25,7 +23,7 @@ int main() {
 
     while (true) {
         host.printf("INFO:Scanning for NFC card\r\n");
-        nfc_start(i2c, &auth);
+        nfc_start(i2c, auth);
         host.printf("INFO:NFC card found and authorised\r\n");
 
         host.printf("INFO:Scanning for beacons\r\n");
