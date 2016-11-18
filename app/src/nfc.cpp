@@ -1,5 +1,4 @@
 #include "nfc.h"
-
 #include "PN532.h"
 #include "PN532_I2C.h"
 
