@@ -11,8 +11,8 @@ void tickerCallback() {
 }
 
 bool auth(uint8_t uid[7]) {
-    host.printf("AUTH:%s", uid);
-    return host.getc();
+    host.printf("AUTH:%s\r\n", uid);
+    return host.getc() == 1;
 }
 
 int main() {
