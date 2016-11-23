@@ -1,0 +1,18 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "github.com/tarm/serial",
+			"repository": "https://github.com/tarm/serial",
+			"revision": "37be519d49878d0098e34fb614136b81e6c87861",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/yosssi/gmq/mqtt",
+			"repository": "https://github.com/yosssi/gmq",
+			"revision": "8b6f29886d48001ed1f76ee3f1471355b0b64b21",
+			"branch": "master",
+			"path": "/mqtt"
+		}
+	]
+}
