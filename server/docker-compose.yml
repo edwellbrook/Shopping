@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+    interface:
+        build: .
+        depends_on:
+            - 'mqtt'
+        devices:
+            - '/dev/ttyS0:/dev/ttyS0'
+    mqtt:
+        image: 'cyrilix/rabbitmq-mqtt'
