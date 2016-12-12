@@ -3,17 +3,20 @@ package main
 import (
 	"errors"
 	"flag"
+	"log"
 
 	"github.com/tarm/serial"
 	mqtt_client "github.com/yosssi/gmq/mqtt/client"
 )
+
+var ErrNoCOM = errors.New("A COM port must be specified")
 
 type Config struct {
 	Serial *serial.Config
 	MQTT   *mqtt_client.ConnectOptions
 }
 
-func appConfig() (*Config, error) {
+func mustLoadConfig() *Config {
 	conf := &Config{}
 
 	name := flag.String("com", "", "COM port for transferring data")
@@ -23,7 +26,7 @@ func appConfig() (*Config, error) {
 	flag.Parse()
 
 	if *name == "" {
-		return conf, errors.New("A COM port must be specified")
+		log.Fatal(ErrNoCOM)
 	}
 
 	conf.Serial = &serial.Config{
@@ -37,5 +40,5 @@ func appConfig() (*Config, error) {
 		ClientID: []byte("shopping-client"),
 	}
 
-	return conf, nil
+	return conf
 }
