@@ -6,13 +6,22 @@ import (
 	"log"
 	"serial_api"
 	"strings"
+	"time"
 
+	"github.com/cenkalti/backoff"
 	"github.com/tarm/serial"
 	mqtt_client "github.com/yosssi/gmq/mqtt/client"
 )
 
+type SerialResponse struct {
+	Data  []byte
+	Error error
+}
+
+var config *Config
 var serialPort *serial.Port
 var mqttClient *mqtt_client.Client
+var serialChan chan SerialResponse
 
 func authoriseCard(cardId []byte) {
 	log.Printf("Authorising card: %v\n", cardId)
@@ -38,64 +47,120 @@ func foundBeacon(beaconId string) {
 	log.Printf("Found beacon: %s", beaconId)
 }
 
-func parseInput(input []byte) {
-	response := serial_api.Parse(input)
+// func setupSerial(config Config) func() error {
+// 	return func() (err error) {
+// 		serialPort, err = serial.OpenPort(config.Serial)
+// 		if err != nil {
+// 			log.Println(err)
+// 		}
+// 		return err
+// 	}
+// }
+//
+// func connectToSerial(config Config) error {
+// 	serialBackoff := backoff.NewExponentialBackOff()
+// 	serialBackoff.MaxElapsedTime = time.Minute
+//
+// 	err := backoff.Retry(setupSerial(config), serialBackoff)
+// 	if err != nil {
+// 		return err
+// 	}
+//
+// 	return nil
+// }
 
-	switch response.Type {
+func processSerial(response SerialResponse) {
+	if response.Error != nil {
+		// there was an error, attempt to reconnect to hopefully resolve it
+		go setupSerial()
+		return
+	}
+
+	resp := serial_api.Parse(response.Data)
+
+	switch resp.Type {
 	case serial_api.INIT:
 		log.Println("Application starting")
 
 	case serial_api.INFO:
-		msg := strings.Join(response.Args, " ")
+		msg := strings.Join(resp.Args, " ")
 		log.Println(msg)
 
 	case serial_api.AUTH:
-		if len(response.Args) == 1 {
-			cardId := []byte(response.Args[0])
+		if len(resp.Args) == 1 {
+			cardId := []byte(resp.Args[0])
 			authoriseCard(cardId)
 		}
 
 	case serial_api.SCAN:
-		if len(response.Args) == 1 {
-			foundBeacon(response.Args[0])
+		if len(resp.Args) == 1 {
+			foundBeacon(resp.Args[0])
 		}
 
 	default:
-		log.Printf("Application sent unhandled message: %s\n", response.Type)
+		log.Printf("Application sent unhandled message: %s\n", resp.Type)
 	}
 }
 
-func processSerial() {
+func setupSerial() {
+	b := backoff.NewExponentialBackOff()
+	b.MaxElapsedTime = time.Minute
+
+	err := backoff.Retry(func() (err error) {
+		println("attempting to open ting")
+
+		serialPort, err = serial.OpenPort(config.Serial)
+		if err != nil {
+			log.Printf("-> %s", err)
+		}
+		return err
+	}, b)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer serialPort.Close()
+
 	reader := bufio.NewReader(serialPort)
 
 	for {
 		line, _, err := reader.ReadLine()
-		if err != nil {
-			log.Fatal(err)
-		}
+		serialChan <- SerialResponse{line, err}
 
-		parseInput(line)
+		if err != nil {
+			break
+		}
 	}
 }
 
 func main() {
-	config, err := appConfig()
+	var err error
+
+	config, err = appConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	serialPort, err = serial.OpenPort(config.Serial)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer serialPort.Close()
+	// err = connectToSerial(*config)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer serialPort.Close()
 
-	mqttClient = mqtt_client.New(&mqtt_client.Options{})
-	err = mqttClient.Connect(config.MQTT)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer mqttClient.Terminate()
+	// serialPort, err = serial.OpenPort(config.Serial)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	processSerial()
+	serialChan = make(chan SerialResponse)
+
+	go setupSerial()
+
+	for {
+		select {
+		case response := <-serialChan:
+			processSerial(response)
+		}
+	}
 }
