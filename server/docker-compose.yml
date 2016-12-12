@@ -6,6 +6,6 @@ services:
         depends_on:
             - 'mqtt'
         devices:
-            - '/dev/ttyS0:/dev/ttyS0'
+            - '/dev/ttyACM0:/dev/tty.app'
     mqtt:
         image: 'cyrilix/rabbitmq-mqtt'
