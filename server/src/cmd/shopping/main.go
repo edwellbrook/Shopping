@@ -40,8 +40,8 @@ func foundBeacon(beaconId string) {
 func main() {
 	config = mustLoadConfig()
 
-	serialChan = make(chan serial_api.Response)
-	mqttChan = make(chan MQTTMessage)
+	serialChan = make(chan serial_api.Response, 1)
+	mqttChan = make(chan MQTTMessage, 1)
 
 	go setupSerial()
 	go setupMQTT()
