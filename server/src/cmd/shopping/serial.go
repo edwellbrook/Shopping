@@ -58,7 +58,7 @@ func setupSerial() {
 
 	err := backoff.Retry(openSerial, b)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to open serial port: %s\n", err)
 	}
 
 	reader := bufio.NewReader(serialPort)
