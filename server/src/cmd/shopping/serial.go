@@ -13,41 +13,34 @@ import (
 
 var serialPort *serial.Port
 
-type SerialResponse struct {
-	Data  []byte
-	Error error
-}
-
-func processSerial(response SerialResponse) {
+func processSerial(r serial_api.Response) {
 	// if there was an error, attempt to reconnect to hopefully resolve it
-	if response.Error != nil {
+	if r.Error != nil {
 		go setupSerial()
 		return
 	}
 
-	resp := serial_api.Parse(response.Data)
-
-	switch resp.Type {
+	switch r.Type {
 	case serial_api.INIT:
 		log.Println("Application starting")
 
 	case serial_api.INFO:
-		msg := strings.Join(resp.Args, " ")
+		msg := strings.Join(r.Args, " ")
 		log.Println(msg)
 
 	case serial_api.AUTH:
-		if len(resp.Args) == 1 {
-			cardId := []byte(resp.Args[0])
+		if len(r.Args) == 1 {
+			cardId := []byte(r.Args[0])
 			authoriseCard(cardId)
 		}
 
 	case serial_api.SCAN:
-		if len(resp.Args) == 1 {
-			foundBeacon(resp.Args[0])
+		if len(r.Args) == 1 {
+			foundBeacon(r.Args[0])
 		}
 
 	default:
-		log.Printf("Application sent unhandled message: %s\n", resp.Type)
+		log.Printf("Application sent unhandled message: %s\n", r.Type)
 	}
 }
 
@@ -72,7 +65,7 @@ func setupSerial() {
 
 	for {
 		line, _, err := reader.ReadLine()
-		serialChan <- SerialResponse{line, err}
+		serialChan <- *serial_api.NewResponse(line, err)
 
 		if err != nil {
 			break

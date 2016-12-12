@@ -25,17 +25,32 @@ const (
 )
 
 type Response struct {
-	Type string
-	Args []string
+	Raw   []byte
+	Type  string
+	Args  []string
+	Error error
 }
 
-func Parse(input []byte) *Response {
-	str := string(input)
-	args := strings.Split(str, DELIMITTER)
-
-	if len(args) > 1 {
-		return &Response{Type: args[0], Args: args[1:]}
+func NewResponse(raw []byte, err error) *Response {
+	r := &Response{
+		Raw:   raw,
+		Error: err,
 	}
 
-	return &Response{Type: args[0]}
+	if err == nil {
+		r.parseRaw()
+	}
+
+	return r
+}
+
+func (r *Response) parseRaw() {
+	str := string(r.Raw)
+	args := strings.Split(str, DELIMITTER)
+
+	r.Type = args[0]
+
+	if len(args) > 1 {
+		r.Args = args[1:]
+	}
 }
