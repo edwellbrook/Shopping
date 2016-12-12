@@ -2,6 +2,12 @@
 	"version": 0,
 	"dependencies": [
 		{
+			"importpath": "github.com/cenkalti/backoff",
+			"repository": "https://github.com/cenkalti/backoff",
+			"revision": "b02f2bbce11d7ea6b97f282ef1771b0fe2f65ef3",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/tarm/serial",
 			"repository": "https://github.com/tarm/serial",
 			"revision": "37be519d49878d0098e34fb614136b81e6c87861",
