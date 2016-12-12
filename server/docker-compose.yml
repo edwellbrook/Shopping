@@ -5,7 +5,10 @@ services:
         build: .
         depends_on:
             - 'mqtt'
+            - 'postgres'
         devices:
             - '/dev/ttyACM0:/dev/tty.app'
     mqtt:
-        image: 'cyrilix/rabbitmq-mqtt'
+        image: 'cyrilix/rabbitmq-mqtt:latest'
+    postgres:
+        image: 'library/postgres:9.6.1-alpine'
