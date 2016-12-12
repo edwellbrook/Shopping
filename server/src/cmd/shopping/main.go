@@ -3,13 +3,14 @@ package main
 import (
 	"bytes"
 	"log"
+	"serial_api"
 
 	mqtt_client "github.com/yosssi/gmq/mqtt/client"
 )
 
 var config *Config
 var mqttClient *mqtt_client.Client
-var serialChan chan SerialResponse
+var serialChan chan serial_api.Response
 
 func authoriseCard(cardId []byte) {
 	log.Printf("Authorising card: %v\n", cardId)
@@ -38,18 +39,7 @@ func foundBeacon(beaconId string) {
 func main() {
 	config = mustLoadConfig()
 
-	serialChan = make(chan SerialResponse)
-
-	// err = connectToSerial(*config)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer serialPort.Close()
-
-	// serialPort, err = serial.OpenPort(config.Serial)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	serialChan = make(chan serial_api.Response)
 
 	go setupSerial()
 
