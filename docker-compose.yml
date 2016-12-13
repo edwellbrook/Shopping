@@ -1,14 +1,19 @@
 version: '2'
 
 services:
-    interface:
-        build: .
+    web:
+        build: ./web
         depends_on:
-            - 'mqtt'
+            - 'rabbitmq'
+            - 'postgres'
+    interface:
+        build: ./interface
+        depends_on:
+            - 'rabbitmq'
             - 'postgres'
         devices:
             - '/dev/ttyACM0:/dev/tty.app'
-    mqtt:
+    rabbitmq:
         image: 'cyrilix/rabbitmq-mqtt:latest'
     postgres:
         image: 'library/postgres:9.6.1-alpine'
