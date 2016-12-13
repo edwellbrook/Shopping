@@ -1,3 +1,15 @@
-<h1><%= message %></h1>
-<h2><%= error.status %></h2>
-<pre><%= error.stack %></pre>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= message %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= message %></h1>
+
+    <% if (error.message != null) { %>
+        <h2><%= error.message %></h2>
+        <pre><%= error.stack %></pre>
+    <% } %>
+  </body>
+</html>
