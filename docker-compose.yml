@@ -6,6 +6,10 @@ services:
         depends_on:
             - 'rabbitmq'
             - 'postgres'
+        environment:
+            - 'PGUSER=postgres'
+            - 'PGHOST=postgres'
+            - 'PGDATABASE=postgres'
         ports:
             - '80:8080'
     interface:
@@ -15,6 +19,10 @@ services:
             - 'postgres'
         devices:
             - '/dev/ttyACM0:/dev/tty.app'
+        environment:
+            - 'COM=/dev/tty.app'
+            - 'MQTT=rabbitmq:1883'
+            - 'PSQL=postgres://postgres@postgres:5432?sslmode=disable'
     rabbitmq:
         image: 'cyrilix/rabbitmq-mqtt:latest'
     postgres:
