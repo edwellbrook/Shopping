@@ -32,8 +32,8 @@ func setupDatabase() {
 
 	script := `
 CREATE TABLE IF NOT EXISTS cards (
-	card_id varchar(16) not null,
-	user_id integer not null
+	card_id varchar(16) UNIQUE NOT NULL,
+	user_id integer NOT NULL
 );`
 
 	if _, err = postgres.Exec(script); err != nil {
