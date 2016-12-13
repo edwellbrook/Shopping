@@ -4,3 +4,4 @@ BUILD
 mbed_settings.py
 bin
 pkg
+node_modules

@@ -6,6 +6,8 @@ services:
         depends_on:
             - 'rabbitmq'
             - 'postgres'
+        ports:
+            - '80:8080'
     interface:
         build: ./interface
         depends_on:
@@ -16,4 +18,4 @@ services:
     rabbitmq:
         image: 'cyrilix/rabbitmq-mqtt:latest'
     postgres:
-        image: 'library/postgres:9.6.1-alpine'
+        image: 'postgres:9.6.1-alpine'
