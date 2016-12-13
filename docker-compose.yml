@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 
 services:
     web:
@@ -10,6 +10,7 @@ services:
             - 'PGUSER=postgres'
             - 'PGHOST=postgres'
             - 'PGDATABASE=postgres'
+            - 'NODE_ENV=${NODE_ENV:-development}'
         ports:
             - '80:8080'
     interface:
