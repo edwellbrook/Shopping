@@ -4,7 +4,7 @@ module.exports = function(database) {
   const router = express.Router()
 
   router.get('/', function(req, res, next) {
-    res.send('respond with a resource')
+    res.render('customer/index', {})
   })
 
   router.get('/register', function(req, res, next) {
