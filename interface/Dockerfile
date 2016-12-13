@@ -8,5 +8,5 @@ RUN go install ./src/...
 
 ENTRYPOINT bin/serial-receiver \
             -com=/dev/tty.app \
-            -mqtt=mqtt:1883 \
+            -mqtt=rabbitmq:1883 \
             -psql=postgres://postgres@postgres:5432?sslmode=disable
