@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bytes"
+	"database/sql"
 	"log"
 	"serial_api"
 )
@@ -10,23 +10,25 @@ var config *Config
 var serialChan chan serial_api.Response
 var mqttChan chan MQTTMessage
 
-func authoriseCard(cardId []byte) {
+func authoriseCard(cardId string) {
 	log.Printf("Authorising card: %v\n", cardId)
 
 	var response []byte
-	var message MQTTMessage
+	var userId int
 
-	// we should check this against an auth server but for now
-	// just check against literal
-	if bytes.Equal([]byte{131, 20, 142, 171, 45, 195, 1}, cardId) {
-		response = []byte{1}
-		message = MQTTMessage{"/auth/accepted", cardId}
-	} else {
+	err := postgres.QueryRow("SELECT user_id FROM cards WHERE card_id = $1", cardId).Scan(&userId)
+
+	switch {
+	case err == sql.ErrNoRows:
 		response = []byte{0}
-		message = MQTTMessage{"/auth/denied", cardId}
+		mqttChan <- MQTTMessage{"/auth/denied", []byte(cardId)}
+	case err != nil:
+		response = []byte{0}
+		log.Printf("Database error: %s\n", err)
+	default:
+		response = []byte{1}
+		mqttChan <- MQTTMessage{"/auth/accepted", []byte(cardId)}
 	}
-
-	mqttChan <- message
 
 	if _, err := serialPort.Write(response); err != nil {
 		log.Printf("Failed to write auth response: %s\n", err)
@@ -45,6 +47,7 @@ func main() {
 
 	go setupSerial()
 	go setupMQTT()
+	go setupDatabase()
 
 	for {
 		select {

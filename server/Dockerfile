@@ -6,4 +6,7 @@ COPY vendor/src src/vendor
 COPY src src
 RUN go install ./src/...
 
-ENTRYPOINT bin/shopping -com=/dev/tty.app -mqtt=mqtt:1883
+ENTRYPOINT bin/serial-receiver \
+            -com=/dev/tty.app \
+            -mqtt=mqtt:1883 \
+            -psql=postgres://postgres@postgres:5432?sslmode=disable

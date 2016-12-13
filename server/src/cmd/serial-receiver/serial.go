@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/hex"
 	"log"
 	"serial_api"
 	"strings"
@@ -30,7 +31,7 @@ func processSerial(r serial_api.Response) {
 
 	case serial_api.AUTH:
 		if len(r.Args) == 1 {
-			cardId := []byte(r.Args[0])
+			cardId := hex.EncodeToString([]byte(r.Args[0]))
 			authoriseCard(cardId)
 		}
 

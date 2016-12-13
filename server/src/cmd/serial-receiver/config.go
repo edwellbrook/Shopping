@@ -12,8 +12,9 @@ import (
 var ErrNoCOM = errors.New("A COM port must be specified")
 
 type Config struct {
-	Serial *serial.Config
-	MQTT   *mqtt_client.ConnectOptions
+	Serial   *serial.Config
+	MQTT     *mqtt_client.ConnectOptions
+	Postgres string
 }
 
 func mustLoadConfig() *Config {
@@ -22,6 +23,7 @@ func mustLoadConfig() *Config {
 	name := flag.String("com", "", "COM port for transferring data")
 	baud := flag.Int("baud", 9600, "Baud rate for COM port")
 	mqtt := flag.String("mqtt", "127.0.0.1:1883", "Address for MQTT server")
+	psql := flag.String("psql", "127.0.0.1:5432", "Address for Postgres server")
 
 	flag.Parse()
 
@@ -39,6 +41,8 @@ func mustLoadConfig() *Config {
 		Address:  *mqtt,
 		ClientID: []byte("shopping-client"),
 	}
+
+	conf.Postgres = *psql
 
 	return conf
 }
