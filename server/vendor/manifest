@@ -8,6 +8,12 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/lib/pq",
+			"repository": "https://github.com/lib/pq",
+			"revision": "4a82388ebc5138c8289fe9bc602cb0b3e32cd617",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/tarm/serial",
 			"repository": "https://github.com/tarm/serial",
 			"revision": "37be519d49878d0098e34fb614136b81e6c87861",
