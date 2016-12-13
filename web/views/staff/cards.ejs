@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Active Cards</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1>Active Cards</h1>
+
+    <ul>
+        <% cards.forEach(function(card) { %>
+            <li><code><%= card.card_id %></code></li>
+        <%})%>
+    </ul>
+  </body>
+</html>

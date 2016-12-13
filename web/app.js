@@ -1,15 +1,16 @@
-var express = require('express')
-var path = require('path')
-var logger = require('morgan')
-var cookieParser = require('cookie-parser')
-var bodyParser = require('body-parser')
-var pg = require('pg')
+const express = require('express')
+const path = require('path')
+const logger = require('morgan')
+const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
+const pg = require('pg')
 
-var index = require('./routes/index')
-var customerRoutes = require('./routes/customer')
+const index = require('./routes/index')
+const customerRoutes = require('./routes/customer')
+const staffRoutes = require('./routes/staff')
 
-var app = express()
-var database = new pg.Pool()
+const app = express()
+const database = new pg.Pool()
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
@@ -25,10 +26,11 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', index)
 app.use('/customer', customerRoutes(database))
+app.use('/staff', staffRoutes(database))
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found')
+  let err = new Error('Not Found')
   err.status = 404
   next(err)
 })

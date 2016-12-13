@@ -1,7 +1,7 @@
-var express = require('express')
+const express = require('express')
 
 module.exports = function(database) {
-  var router = express.Router()
+  const router = express.Router()
 
   router.get('/', function(req, res, next) {
     res.send('respond with a resource')
