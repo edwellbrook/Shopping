@@ -4,14 +4,14 @@ const http = require('http')
 const logger = require('morgan')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
-const pg = require('pg')
+const postgres = require('pg-pool')
 
 const index = require('./routes/index')
 const customerRoutes = require('./routes/customer')
 const staffRoutes = require('./routes/staff')
 
 const app = express()
-const database = new pg.Pool()
+const database = postgres()
 
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
