@@ -13,7 +13,7 @@ module.exports = function(database) {
 
   router.post('/register', function(req, res, next) {
     let card = req.body.card_id
-    if (card == null) {
+    if (card == null || card.trim() == '') {
       let err = new Error('Invalid Card ID')
       err.status = 400
 
