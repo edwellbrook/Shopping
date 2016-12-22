@@ -1,9 +1,11 @@
 #include "mbed.h"
 #include "bluetooth.h"
 #include "nfc.h"
+#include "display.h"
+
+Serial host(USBTX, USBRX);
 
 DigitalOut led(LED1);
-Serial     host(USBTX, USBRX);
 I2C        i2c(I2C_SDA0, I2C_SCL0);
 
 void tickerCallback() {
@@ -31,13 +33,23 @@ int main() {
 
     while (true) {
         host.printf("INFO:Scanning for NFC card\r\n");
+        display_message("PLEASE SCAN YOUR CARD");
         nfc_start(i2c, auth);
         host.printf("INFO:NFC card found and authorised\r\n");
 
         host.printf("INFO:Scanning for beacons\r\n");
+        display_message("LOADING SHOPPING LIST");
         ble_start(sendBeacons);
         host.printf("INFO:Ending beacon scan\r\n");
 
         host.printf("INFO:Restarting system...\r\n");
     }
+
+    // char items[][FRAME_WIDTH + 1] = {
+    //     "CHEESE",
+    //     "TUNA",
+    //     "BACON",
+    //     "SPAGHETTI",
+    //     "BUTTER"
+    // };
 }
