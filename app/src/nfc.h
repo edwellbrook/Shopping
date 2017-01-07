@@ -1,4 +1,5 @@
 #include "mbed.h"
+#include "display.h"
 
 typedef bool (*AuthFn)(uint8_t[7]);
 

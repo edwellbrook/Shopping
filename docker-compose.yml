@@ -13,6 +13,7 @@ services:
             - 'NODE_ENV=${NODE_ENV:-development}'
         ports:
             - '80:8080'
+
     interface:
         build: ./interface
         depends_on:
@@ -24,7 +25,19 @@ services:
             - 'COM=/dev/tty.app'
             - 'MQTT=rabbitmq:1883'
             - 'PSQL=postgres://postgres@postgres:5432?sslmode=disable'
+            # force use of c-based dns resolver because the pure go resolver
+            # returns invalid ip addresses for service aliases when using
+            # alpine linux
+            #  - https://github.com/gliderlabs/docker-alpine/issues/8
+            #  - https://groups.google.com/forum/#!topic/golang-nuts/G-faJ0bthz0
+            - 'GODEBUG=netdns=cgo'
+
     rabbitmq:
         image: 'cyrilix/rabbitmq-mqtt:latest'
+        ports:
+            - '1883:1883'
+
     postgres:
         image: 'postgres:9.6.1-alpine'
+        ports:
+            - '5432:5432'

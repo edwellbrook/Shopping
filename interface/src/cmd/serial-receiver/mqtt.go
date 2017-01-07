@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"time"
 
 	"github.com/cenkalti/backoff"
@@ -16,34 +15,21 @@ type MQTTMessage struct {
 	Data  []byte
 }
 
-func publishMessage(m MQTTMessage) {
-	err := mqttClient.Publish(&mqtt_client.PublishOptions{
+func publishMessage(m MQTTMessage) error {
+	return mqttClient.Publish(&mqtt_client.PublishOptions{
 		QoS:       mqtt.QoS0,
 		TopicName: []byte(m.Topic),
 		Message:   m.Data,
 	})
-
-	if err != nil {
-		log.Println(err)
-	}
 }
 
-func openMQTT() error {
-	mqttClient = mqtt_client.New(&mqtt_client.Options{})
-
-	err := mqttClient.Connect(config.MQTT)
-	if err != nil {
-		log.Println(err)
-	}
-	return err
-}
-
-func setupMQTT() {
+func openMQTT(config *mqtt_client.ConnectOptions) error {
 	b := backoff.NewExponentialBackOff()
 	b.MaxElapsedTime = time.Minute
 
-	err := backoff.Retry(openMQTT, b)
-	if err != nil {
-		log.Fatalf("Failed to connect to MQTT: %s\n", err)
-	}
+	return backoff.Retry(func() error {
+		mqttClient = mqtt_client.New(nil)
+
+		return mqttClient.Connect(config)
+	}, b)
 }

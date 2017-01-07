@@ -20,27 +20,22 @@ const (
 	// system has logged information
 	INFO = "INFO"
 
+	// system is echoing handshake bytes
+	ECHO = "ECHO"
+
 	// delimitter
 	DELIMITTER = ":"
 )
 
 type Response struct {
-	Raw   []byte
-	Type  string
-	Args  []string
-	Error error
+	Raw  []byte
+	Type string
+	Args []string
 }
 
-func NewResponse(raw []byte, err error) *Response {
-	r := &Response{
-		Raw:   raw,
-		Error: err,
-	}
-
-	if err == nil {
-		r.parseRaw()
-	}
-
+func NewResponse(raw []byte) *Response {
+	r := &Response{Raw: raw}
+	r.parseRaw()
 	return r
 }
 

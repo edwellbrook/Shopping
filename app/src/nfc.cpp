@@ -13,7 +13,14 @@ void waitForTarget(PN532 nfc, AuthFn auth) {
         success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, &uid[0], &uidLength);
 
         if (success) {
+            display_message("CHECKING CARD");
             authorised = auth(uid);
+
+            if (authorised) {
+                display_message("CARD AUTHORISED");
+            } else {
+                display_message("CARD DECLINED");
+            }
         }
     }
 }
