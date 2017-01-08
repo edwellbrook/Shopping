@@ -75,7 +75,7 @@ module.exports = function(database) {
       return next(err)
     }
 
-    database.query('SELECT card_id, password FROM cards WHERE card_id = $1', [card], function(err, results) {
+    database.query('SELECT id, password FROM cards WHERE id = $1', [card], function(err, results) {
       if (err != null) {
         return next(err)
       }
@@ -120,7 +120,7 @@ module.exports = function(database) {
       return next(err)
     }
 
-    database.query('SELECT card_id, list FROM cards WHERE card_id = $1', [cardId], function(err, results) {
+    database.query('SELECT id, list FROM cards WHERE id = $1', [cardId], function(err, results) {
       if (err != null) {
         return next(err)
       }
