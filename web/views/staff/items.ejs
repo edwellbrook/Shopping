@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Staff Index</title>
+    <title>All Items</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
@@ -18,7 +18,15 @@
       </nav>
     </header>
 
-    <h1>Staff Index</h1>
+    <h1>All Items</h1>
+
+    <a href="/staff/items/add">Add Items</a>
+
+    <ul>
+      <% items.forEach(item => { %>
+        <li><%= item.name %></li>
+      <% }) %>
+    </ul>
 
   </body>
 </html>

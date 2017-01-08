@@ -14,14 +14,15 @@
 
       <nav>
         <a href="/staff/cards">All Cards</a>
+        <a href="/staff/items">All Items</a>
       </nav>
     </header>
 
     <h1>All Cards</h1>
 
     <ul>
-        <% cards.forEach(function(card) { %>
-            <li><code><%= card.card_id %></code></li>
+        <% cards.forEach(card => { %>
+            <li><code><%= card.id %></code></li>
         <%})%>
     </ul>
   </body>

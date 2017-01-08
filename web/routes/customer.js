@@ -75,19 +75,19 @@ module.exports = function(database) {
       return next(err)
     }
 
-    database.query('SELECT id, password FROM cards WHERE id = $1', [card], function(err, results) {
+    database.query('SELECT id, password FROM cards WHERE id = $1', [card], function(err, result) {
       if (err != null) {
         return next(err)
       }
 
-      if (results.rowCount != 1) {
+      if (result.rowCount != 1) {
         let err = new Error('Invalid login')
         err.status = 401
 
         return next(err)
       }
 
-      const hash = results.rows[0].password
+      const hash = result.rows[0].password
       bcrypt.compare(pass, hash, function(err, success) {
         if (err != null) {
           return next(err)
@@ -120,12 +120,12 @@ module.exports = function(database) {
       return next(err)
     }
 
-    database.query('SELECT id, list FROM cards WHERE id = $1', [cardId], function(err, results) {
+    database.query('SELECT id, list FROM cards WHERE id = $1', [cardId], function(err, result) {
       if (err != null) {
         return next(err)
       }
 
-      if (results.rowCount != 1) {
+      if (result.rowCount != 1) {
         // something messed up in the database. force logout
         req.session.destroy()
 
@@ -135,7 +135,7 @@ module.exports = function(database) {
         return next(err)
       }
 
-      const list = results.rows[0].list
+      const list = result.rows[0].list
       res.render('customer/list', {
         list: list
       })
