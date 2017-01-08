@@ -4,6 +4,7 @@ const http = require('http')
 const logger = require('morgan')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
+const session = require('express-session')
 const postgres = require('pg-pool')
 
 const index = require('./routes/index')
@@ -21,6 +22,12 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
+
+app.use(session({
+  secret: 'some-secret',
+  saveUninitialized: false,
+  resave: true
+}))
 
 app.use('/', index)
 app.use('/customer', customerRoutes(database))

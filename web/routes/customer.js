@@ -75,7 +75,7 @@ module.exports = function(database) {
       return next(err)
     }
 
-    database.query('SELECT * FROM cards WHERE card_id = $1', [card], function(err, results) {
+    database.query('SELECT card_id, password FROM cards WHERE card_id = $1', [card], function(err, results) {
       if (err != null) {
         return next(err)
       }
@@ -99,6 +99,7 @@ module.exports = function(database) {
           })
         }
 
+        req.session.card = card
         res.redirect('/customer/list')
       })
     })
@@ -110,7 +111,35 @@ module.exports = function(database) {
   //
 
   router.get('/list', function(req, res, next) {
-    res.send('This is where you can edit your shopping list.')
+    const cardId = req.session.card
+
+    if (cardId == null) {
+      let err = new Error('Must log in')
+      err.status = 401
+
+      return next(err)
+    }
+
+    database.query('SELECT card_id, list FROM cards WHERE card_id = $1', [cardId], function(err, results) {
+      if (err != null) {
+        return next(err)
+      }
+
+      if (results.rowCount != 1) {
+        // something messed up in the database. force logout
+        req.session.destroy()
+
+        let err = new Error('Invalid number of rows returned')
+        err.status = 500
+
+        return next(err)
+      }
+
+      const list = results.rows[0].list
+      res.render('customer/list', {
+        list: list
+      })
+    })
   })
 
   return router
