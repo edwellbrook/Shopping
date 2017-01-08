@@ -7,6 +7,22 @@ module.exports = function(database) {
   const router = express.Router()
 
   //
+  // Authorisation
+  //
+
+  function authorise(req, res, next) {
+    if (req.session.card) {
+      return next()
+    }
+
+    let err = new Error('Must log in')
+    err.status = 401
+
+    return next(err)
+  }
+
+
+  //
   // Index
   //
 
@@ -110,15 +126,8 @@ module.exports = function(database) {
   // List
   //
 
-  router.get('/list', function(req, res, next) {
+  router.get('/list', authorise, function(req, res, next) {
     const cardId = req.session.card
-
-    if (cardId == null) {
-      let err = new Error('Must log in')
-      err.status = 401
-
-      return next(err)
-    }
 
     database.query('SELECT id, list FROM cards WHERE id = $1', [cardId], function(err, result) {
       if (err != null) {
@@ -142,20 +151,18 @@ module.exports = function(database) {
     })
   })
 
-  router.get('/list/add', function(req, res, next) {
+
+  //
+  // List management
+  //
+
+  router.get('/list/add', authorise, function(req, res, next) {
     res.render('customer/add', {})
   })
 
-  router.post('/list/add', function(req, res, next) {
+  router.post('/list/add', authorise, function(req, res, next) {
     const cardId = req.session.card
     const name = (req.body.item_name || '').trim()
-
-    if (cardId == null) {
-      let err = new Error('Must log in')
-      err.status = 401
-
-      return next(err)
-    }
 
     database.query('SELECT name FROM items WHERE name = $1', [name], function(err, result) {
       if (err != null) {
