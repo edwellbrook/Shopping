@@ -13,6 +13,7 @@ services:
             - 'NODE_ENV=${NODE_ENV:-development}'
         ports:
             - '80:8080'
+            - '8080:8080'
 
     interface:
         build: ./interface

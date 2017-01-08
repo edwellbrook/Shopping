@@ -1,15 +1,15 @@
 FROM node:6.9.2-alpine
 
+# Add build tools for node-gyp
+RUN apk add --no-cache make gcc g++ python
+
 RUN mkdir -p /src/app
 WORKDIR /src/app
-
-RUN mkdir -p node_modules
-VOLUME /src/app/node_modules
 
 COPY package.json .
 RUN npm install
 
-COPY . .
+COPY . /src/app
 
 EXPOSE 8080
 ENTRYPOINT npm start

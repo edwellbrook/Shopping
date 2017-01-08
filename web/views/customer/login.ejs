@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Register your access card</title>
+    <title>Log In</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
@@ -18,15 +18,15 @@
       </nav>
     </header>
 
-    <h1>Register your access card</h1>
+    <h1>Log In</h1>
 
-    <% if (didRegister) { %>
+    <% if (attemptedLogin) { %>
         <div class="response">
-            <p>Successfully registered your card. <a href="/customer/login">Log In Now</a></p>
+            <p>Login information was incorrect</p>
         </div>
     <% } %>
 
-    <form action="/customer/register" method="post">
+    <form action="/customer/login" method="post">
         <label for="card_id">Card ID:</label>
         <input name="card_id" type="text" />
 
