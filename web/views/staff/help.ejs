@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Helper</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script href='/javascripts/mqtt.js'></script>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/customer">Customer</a>
+        <a href="/staff">Staff</a>
+      </nav>
+
+      <nav>
+        <a href="/staff/cards">All Cards</a>
+        <a href="/staff/items">All Items</a>
+      </nav>
+    </header>
+
+    <h1>Active Lists</h1>
+
+    <script>
+      var client = mqtt.connect('ws://localhost:15675/ws')
+
+      client.on('connect', function() {
+        client.subscribe('/help')
+        client.subscribe('/active')
+      })
+
+      client.on('message', function(topic, data) {
+        switch topic {
+        case 'help':
+          return handleHelp(data)
+        default:
+          console.log('Missing message handler for topic:', topic)
+        }
+      })
+
+      function handleHelp(data) {
+        console.log(data)
+      }
+    </script>
+  </body>
+</html>
