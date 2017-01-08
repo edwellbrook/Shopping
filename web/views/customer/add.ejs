@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Customer Index</title>
+    <title>Add Item</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
@@ -18,15 +18,13 @@
       </nav>
     </header>
 
-    <h1>Your shopping list</h1>
+    <h1>Add Item</h1>
 
-    <a href="/customer/list/add">Add Item</a>
+    <form action="/customer/list/add" method="post">
+        <label for="item_name">Name:</label>
+        <input name="item_name" type="text" />
 
-    <ul>
-      <% list.forEach(item => { %>
-        <li><%= item %></li>
-      <% }) %>
-    </ul>
-
+        <input type="submit" />
+    </form>
   </body>
 </html>
