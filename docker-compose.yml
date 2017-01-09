@@ -34,9 +34,10 @@ services:
             - 'GODEBUG=netdns=cgo'
 
     rabbitmq:
-        image: 'cyrilix/rabbitmq-mqtt:latest'
+        build: ./rabbitmq-web-mqtt
         ports:
             - '1883:1883'
+            - '15675:15675'
 
     postgres:
         image: 'postgres:9.6.1-alpine'
