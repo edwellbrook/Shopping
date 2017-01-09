@@ -4,7 +4,7 @@ module.exports = function(database) {
   const router = express.Router()
 
   router.get('/', function(req, res, next) {
-    res.render('staff/index', {})
+    res.render('index', {})
   })
 
   router.get('/cards', function(req, res, next) {
@@ -13,14 +13,14 @@ module.exports = function(database) {
         return next(err)
       }
 
-      res.render('staff/cards', {
+      res.render('cards', {
         cards: result.rows
       })
     })
   })
 
   router.get('/help', function(req, res, next) {
-    res.render('staff/help', {
+    res.render('help', {
       mqttAddress: `ws://${ process.env.MQTT || 'localhost:15675' }/ws`
     })
   })

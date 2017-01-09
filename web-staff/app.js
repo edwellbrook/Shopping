@@ -4,12 +4,9 @@ const http = require('http')
 const logger = require('morgan')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
-const session = require('express-session')
 const postgres = require('pg-pool')
 
-const index = require('./routes/index')
-const customerRoutes = require('./routes/customer')
-const staffRoutes = require('./routes/staff')
+const routes = require('./routes/index')
 
 const app = express()
 const database = postgres()
@@ -23,15 +20,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
-app.use(session({
-  secret: 'some-secret',
-  saveUninitialized: false,
-  resave: true
-}))
-
-app.use('/', index)
-app.use('/customer', customerRoutes(database))
-app.use('/staff', staffRoutes(database))
+app.use('/', routes(database))
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

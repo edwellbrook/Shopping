@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Log In</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/register">Register Card</a>
+        <a href="/login">Log In</a>
+      </nav>
+    </header>
+
+    <h1>Log In</h1>
+
+    <% if (attemptedLogin) { %>
+        <div class="response">
+            <p>Login information was incorrect</p>
+        </div>
+    <% } %>
+
+    <form action="/login" method="post">
+        <label for="card_id">Card ID:</label>
+        <input name="card_id" type="text" />
+
+        <label for="card_pass">Password:</label>
+        <input name="card_pass" type="password" />
+
+        <input type="submit" />
+    </form>
+  </body>
+</html>

@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
     web:
-        build: ./web
+        build: ./web-customer
         depends_on:
             - 'rabbitmq'
             - 'postgres'
@@ -12,8 +12,20 @@ services:
             - 'PGDATABASE=postgres'
             - 'NODE_ENV=${NODE_ENV:-development}'
         ports:
-            - '80:8080'
             - '8080:8080'
+
+    admin:
+        build: ./web-staff
+        depends_on:
+            - 'rabbitmq'
+            - 'postgres'
+        environment:
+            - 'PGUSER=postgres'
+            - 'PGHOST=postgres'
+            - 'PGDATABASE=postgres'
+            - 'NODE_ENV=${NODE_ENV:-development}'
+        ports:
+            - '8000:8080'
 
     interface:
         build: ./interface

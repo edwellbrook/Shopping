@@ -1,32 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Log In</title>
+    <title>Register your access card</title>
     <link rel="stylesheet" href="/stylesheets/style.css" />
   </head>
   <body>
     <header>
       <nav>
-        <a href="/">Home</a>
-        <a href="/customer">Customer</a>
-        <a href="/staff">Staff</a>
-      </nav>
-
-      <nav>
-        <a href="/customer/register">Register Card</a>
-        <a href="/customer/login">Log In</a>
+        <a href="/register">Register Card</a>
+        <a href="/login">Log In</a>
       </nav>
     </header>
 
-    <h1>Log In</h1>
+    <h1>Register your access card</h1>
 
-    <% if (attemptedLogin) { %>
+    <% if (didRegister) { %>
         <div class="response">
-            <p>Login information was incorrect</p>
+            <p>Successfully registered your card. <a href="/login">Log In Now</a></p>
         </div>
     <% } %>
 
-    <form action="/customer/login" method="post">
+    <form action="/register" method="post">
         <label for="card_id">Card ID:</label>
         <input name="card_id" type="text" />
 

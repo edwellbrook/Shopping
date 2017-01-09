@@ -27,7 +27,7 @@ module.exports = function(database) {
   //
 
   router.get('/', function(req, res, next) {
-    res.render('customer/index', {})
+    res.render('index', {})
   })
 
 
@@ -36,7 +36,7 @@ module.exports = function(database) {
   //
 
   router.get('/register', function(req, res, next) {
-    res.render('customer/register', {
+    res.render('register', {
       didRegister: false
     })
   })
@@ -62,7 +62,7 @@ module.exports = function(database) {
           return next(err)
         }
 
-        res.render('customer/register', {
+        res.render('register', {
           didRegister: true
         })
       })
@@ -75,7 +75,7 @@ module.exports = function(database) {
   //
 
   router.get('/login', function(req, res, next) {
-    res.render('customer/login', {
+    res.render('login', {
       attemptedLogin: false
     })
   })
@@ -110,13 +110,13 @@ module.exports = function(database) {
         }
 
         if (success === false) {
-          return res.render('customer/login', {
+          return res.render('login', {
             attemptedLogin: true
           })
         }
 
         req.session.card = card
-        res.redirect('/customer/list')
+        res.redirect('/list')
       })
     })
   })
@@ -145,7 +145,7 @@ module.exports = function(database) {
       }
 
       const list = result.rows[0].list
-      res.render('customer/list', {
+      res.render('list', {
         list: list
       })
     })
@@ -157,7 +157,7 @@ module.exports = function(database) {
   //
 
   router.get('/list/add', authorise, function(req, res, next) {
-    res.render('customer/add', {})
+    res.render('add', {})
   })
 
   router.post('/list/add', authorise, function(req, res, next) {
@@ -169,7 +169,7 @@ module.exports = function(database) {
         return next(err)
       }
 
-      res.redirect('/customer/list')
+      res.redirect('/list')
     })
   })
 

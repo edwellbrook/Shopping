@@ -1,6 +1,3 @@
-# Database Layout
-
-```sql
 -- login details for a card and shopping list
 CREATE TABLE IF NOT EXISTS cards (
   id          varchar(16)                    NOT NULL,
@@ -9,4 +6,3 @@ CREATE TABLE IF NOT EXISTS cards (
 
   CONSTRAINT cards_id_key PRIMARY KEY (id)
 );
-```
