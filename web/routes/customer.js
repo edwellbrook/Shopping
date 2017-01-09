@@ -164,25 +164,12 @@ module.exports = function(database) {
     const cardId = req.session.card
     const name = (req.body.item_name || '').trim()
 
-    database.query('SELECT name FROM items WHERE name = $1', [name], function(err, result) {
+    database.query('UPDATE cards SET list = array_append(list, $1) WHERE id = $2', [name, cardId], function(err) {
       if (err != null) {
         return next(err)
       }
 
-      if (result.rowCount != 1) {
-        let err = new Error('Item doesn\'t exist')
-        err.status = 400
-
-        return next(err)
-      }
-
-      database.query('UPDATE cards SET list = array_append(list, $1) WHERE id = $2', [name, cardId], function(err) {
-        if (err != null) {
-          return next(err)
-        }
-
-        res.redirect('/customer/list')
-      })
+      res.redirect('/customer/list')
     })
   })
 

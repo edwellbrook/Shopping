@@ -1,23 +1,21 @@
-var lists = []
+var requests = {}
 
 window.setInterval(function() {
   var d = new Date()
-  d.setSeconds(d.getSeconds() - 10)
+  d.setSeconds(d.getSeconds() - 5)
 
-  console.log(lists)
+  Object.keys(requests).forEach(function(id) {
+    var req = requests[id]
 
-  lists.forEach(function(list, idx, arr) {
-    if (list.lastPing < d) {
-      arr.splice(idx, 1)
-      console.log('removing item')
+    if (req.ping < d) {
+      $(`[data-id=${req.id}]`).remove()
+      delete requests[id]
     }
   })
-
-  console.log(lists)
 }, 1500)
 
 mqtt
-  .connect('<%= mqttAddress %>')
+  .connect(window.mqttAddress)
   .on('connect', function() {
     this.subscribe('/help')
     this.subscribe('/active')
@@ -40,7 +38,19 @@ mqtt
   })
 
 function handleHelp(data) {
-  console.log(data)
+  req = {
+    id: data.id,
+    location: data.location,
+    ping: new Date()
+  }
+
+  if (requests[req.id]) {
+    $(`#helper [data-id=${req.id}] [data-loc]`).text(req.location)
+  } else {
+    $('#helper').append(`<li data-id='${req.id}'><strong><code>${req.id}</code></strong>: <code data-loc>${req.location}</code></li>`)
+  }
+
+  requests[req.id] = req
 }
 
 function handleActive(data) {

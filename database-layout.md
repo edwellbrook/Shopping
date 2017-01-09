@@ -9,12 +9,4 @@ CREATE TABLE IF NOT EXISTS cards (
 
   CONSTRAINT cards_id_key PRIMARY KEY (id)
 );
-
--- available items in the store
-CREATE TABLE IF NOT EXISTS items (
-  name        varchar(22)                    NOT NULL,
-  beacon      varchar(16)                    NOT NULL,
-
-  CONSTRAINT items_name_key PRIMARY KEY (name)
-);
 ```
