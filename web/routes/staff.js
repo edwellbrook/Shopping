@@ -55,5 +55,11 @@ module.exports = function(database) {
     })
   })
 
+  router.get('/help', function(req, res, next) {
+    res.render('staff/help', {
+      mqttAddress: `ws://${ process.env.MQTT || 'localhost:15675' }/ws`
+    })
+  })
+
   return router
 }
