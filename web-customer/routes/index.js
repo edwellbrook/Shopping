@@ -27,7 +27,11 @@ module.exports = function(database) {
   //
 
   router.get('/', function(req, res, next) {
-    res.render('index', {})
+    if (req.session.card) {
+      res.redirect('/list')
+    } else {
+      res.redirect('/login')
+    }
   })
 
 
