@@ -48,21 +48,21 @@ void serialInterrupt() {
     // reset system
     if (strncmp(str, "RESET", 5) == 0) {
         NVIC_SystemReset();
-
+    }
     // auth response, failed auth
-    } else if (strncmp(str, "AUTH0", 5) == 0) {
+    else if (strncmp(str, "AUTH0", 5) == 0) {
         authorised = 0;
-
+    }
     // auth response, succeeded auth
-    } else if (strncmp(str, "AUTH1", 5) == 0) {
+    else if (strncmp(str, "AUTH1", 5) == 0) {
         authorised = 1;
-
+    }
     // host interface accepted handshake and is ready
-    } else if (strncmp(str, "READY", 5) == 0) {
+    else if (strncmp(str, "READY", 5) == 0) {
         ready = 1;
-
+    }
     // echo the data back
-    } else {
+    else {
         host.printf("ECHO:%s\r\n", str);
     }
 
