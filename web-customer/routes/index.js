@@ -79,6 +79,10 @@ module.exports = function(database) {
   //
 
   router.get('/login', function(req, res, next) {
+    if (req.session.card) {
+      return res.redirect('/list')
+    }
+
     res.render('login', {
       attemptedLogin: false
     })
