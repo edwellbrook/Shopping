@@ -15,7 +15,7 @@ window.setInterval(function() {
 }, 1500)
 
 mqtt
-  .connect(window.mqttAddress)
+  .connect('ws://localhost:15675/ws')
   .on('connect', function() {
     this.subscribe('/help')
     this.subscribe('/active')

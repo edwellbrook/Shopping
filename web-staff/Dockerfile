@@ -1,12 +1,3 @@
-FROM node:6.9.2-alpine
+FROM nginx:1.11.8-alpine
 
-RUN mkdir -p /src/app
-WORKDIR /src/app
-
-COPY package.json .
-RUN npm install
-
-COPY . /src/app
-
-EXPOSE 8080
-ENTRYPOINT npm start
+COPY . /usr/share/nginx/html

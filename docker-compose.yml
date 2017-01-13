@@ -18,14 +18,8 @@ services:
         build: ./web-staff
         depends_on:
             - 'rabbitmq'
-            - 'postgres'
-        environment:
-            - 'PGUSER=postgres'
-            - 'PGHOST=postgres'
-            - 'PGDATABASE=postgres'
-            - 'NODE_ENV=${NODE_ENV:-development}'
         ports:
-            - '8000:8080'
+            - '8000:80'
 
     interface:
         build: ./interface
