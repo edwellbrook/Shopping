@@ -16,11 +16,13 @@
 
     <a href="/list/add">Add Item</a>
 
-    <ul>
+    <ul id="list">
       <% list.forEach(item => { %>
         <li><%= item %></li>
       <% }) %>
     </ul>
 
+    <script src="/javascripts/sortable.min.js"></script>
+    <script src="/javascripts/list.js"></script>
   </body>
 </html>
