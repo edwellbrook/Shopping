@@ -26,75 +26,81 @@ better seperate components and reflect how they would operate in a real-world
 environment.
 
 /app
+----
 
-  An mbed application that is flashed to the nrf52 hardware.
+An mbed application that is flashed to the nrf52 hardware.
 
-  Files:
+Files:
 
-    /app/src/bluetooth.{h,cpp}
-      Functions for interacting with BLE iBeacons
+  /app/src/bluetooth.{h,cpp}
+    Functions for interacting with BLE iBeacons
 
-    /app/src/display.{h,cpp}
-      Functions for interacting with the mbed application shield display
+  /app/src/display.{h,cpp}
+    Functions for interacting with the mbed application shield display
 
-    /app/src/main.cpp
-      The main program and serial input handler
+  /app/src/main.cpp
+    The main program and serial input handler
 
-    /app/src/nfc.{h,cpp}
-      Functions for interacting with the I2C NFC card readers
+  /app/src/nfc.{h,cpp}
+    Functions for interacting with the I2C NFC card readers
 
-  Libraries:
+Libraries:
 
-    - developer.mbed.org/users/chris/code/C12832/#7de323fa46fe
-    - developer.mbed.org/users/dotnfc/code/LibPN532/#b5922b3b3257
-    - github.com/ARMmbed/mbed-os/#cb930e748230d9ccb287629d2eb603baaf63e88a
+  - developer.mbed.org/users/chris/code/C12832/#7de323fa46fe
+  - developer.mbed.org/users/dotnfc/code/LibPN532/#b5922b3b3257
+  - github.com/ARMmbed/mbed-os/#cb930e748230d9ccb287629d2eb603baaf63e88a
 
 /interface:
+-----------
 
-  A Go application that runs on a host computer interacting with the IoT
-  hardware over serial.
+A Go application that runs on a host computer interacting with the IoT hardware
+over serial.
 
-  Files:
-    /interface/src/cmd/serial-receiver/config.go
-      Functions for loading application configuration
+Files:
 
-    /interface/src/cmd/serial-receiver/database.go
-      Functions for interacting with the Postgres database
+  /interface/src/cmd/serial-receiver/config.go
+    Functions for loading application configuration
 
-    /interface/src/cmd/serial-receiver/main.go
-      Main entrypoint and processing of interactions with the mbed application
-      over serial interface
+  /interface/src/cmd/serial-receiver/database.go
+    Functions for interacting with the Postgres database
 
-    /interface/src/cmd/serial-receiver/mqtt.go
-      Functions for interacting with rabbitmq over mqtt protocol
+  /interface/src/cmd/serial-receiver/main.go
+    Main entrypoint and processing of interactions with the mbed application
+    over serial interface
 
-    /interface/src/serial_api/serial_api.go
-      Functions for defining and parsing the custom API for communicating over
-      serial
+  /interface/src/cmd/serial-receiver/mqtt.go
+    Functions for interacting with rabbitmq over mqtt protocol
 
-    /interface/src/serial_device/serial_device.go
-      Wrapper around serial port to abstract away implementation details
+  /interface/src/serial_api/serial_api.go
+    Functions for defining and parsing the custom API for communicating over
+    serial
 
-  Libraries:
+  /interface/src/serial_device/serial_device.go
+    Wrapper around serial port to abstract away implementation details
 
-    - github.com/cenkalti/backoff
-    - github.com/lib/pq
-    - github.com/tarm/serial
-    - github.com/yosssi/gmq/mqtt
+Libraries:
+
+  - github.com/cenkalti/backoff
+  - github.com/lib/pq
+  - github.com/tarm/serial
+  - github.com/yosssi/gmq/mqtt
 
 /rabbitmq-web-mqtt
+------------------
 
-  A Dockerfile and websocket plugin for running mqtt with rabbitmq with docker.
+A Dockerfile and websocket plugin for running mqtt with rabbitmq with docker.
 
 /web-customer
+-------------
 
-  A Node.js application for the customer-facing web service allowing people to
-  register their loyalty card and shopping lists.
+A Node.js application for the customer-facing web service allowing people to
+register their loyalty card and shopping lists.
 
 /web-staff
+----------
 
-  A static staff-facing web service for monitoring alerts for customers
-  requesting help.
+A static staff-facing web service for monitoring alerts for customers requesting
+help.
 
 
 Optional Categories for Marking (1)
