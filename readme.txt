@@ -34,19 +34,19 @@ An mbed application that is flashed to the nrf52 hardware.
 
 Files:
 
-  /app/src/bluetooth.{h,cpp}
+  src/bluetooth.{h,cpp}
 
     Functions for interacting with BLE iBeacons.
 
-  /app/src/display.{h,cpp}
+  src/display.{h,cpp}
 
     Functions for interacting with the mbed application shield display.
 
-  /app/src/main.cpp
+  src/main.cpp
 
     The main program and serial input handler.
 
-  /app/src/nfc.{h,cpp}
+  src/nfc.{h,cpp}
 
     Functions for interacting with the I2C NFC card readers.
 
@@ -65,29 +65,33 @@ over a serial port.
 
 Files:
 
-  /interface/src/cmd/serial-receiver/config.go
+  Dockerfile
+
+    The base Dockerfile to containerise the Go application.
+
+  src/cmd/serial-receiver/config.go
 
     Functions for loading application configuration.
 
-  /interface/src/cmd/serial-receiver/database.go
+  src/cmd/serial-receiver/database.go
 
     Functions for interacting with the Postgres database.
 
-  /interface/src/cmd/serial-receiver/main.go
+  src/cmd/serial-receiver/main.go
 
     Main entrypoint and processing of interactions with the mbed application
     over serial interface.
 
-  /interface/src/cmd/serial-receiver/mqtt.go
+  src/cmd/serial-receiver/mqtt.go
 
     Functions for interacting with rabbitmq over mqtt protocol.
 
-  /interface/src/serial_api/serial_api.go
+  src/serial_api/serial_api.go
 
     Functions for defining and parsing the custom API for communicating over a
     serial port.
 
-  /interface/src/serial_device/serial_device.go
+  src/serial_device/serial_device.go
 
     Wrapper around serial port to abstract away implementation details.
 
@@ -104,12 +108,31 @@ Libraries:
 
 A Dockerfile and websocket plugin for running mqtt with rabbitmq with docker.
 
+Files:
+
+  Dockerfile
+
+    The base Dockerfile to containerise rabbitmq configured with MQTT and
+    websockets.
+
+Libraries:
+
+  - https://github.com/rabbitmq/rabbitmq-web-mqtt
+
 
 /web-customer
 -------------
 
 A Node.js application for the customer-facing web service allowing people to
 register their loyalty card and shopping lists.
+
+Files:
+
+  Dockerfile
+
+    The base Dockerfile to containerise the Node.js application.
+
+Libraries:
 
 
 /web-staff
@@ -120,11 +143,15 @@ help.
 
 Files:
 
-  /web-staff/index.html
+  Dockerfile
+
+    The base Dockerfile to containerise the static webpage.
+
+  index.html
 
     Main web page for monitoring help requests.
 
-  /web-staff/javascripts/help.js
+  javascripts/help.js
 
     JavaScript for connecting to rabbitmq using MQTT over websockets, handling
     help request state, and manipulating the DOM.
@@ -143,32 +170,15 @@ execution.
 
 Files:
 
-  /db-setup.sql
+  db-setup.sql
 
     The Postgres script to set up the SQL database.
 
-  /docker-compose.yml
+  docker-compose.yml
 
     A docker-compose configuration file to allow running multiple services at
     the same time. This also provides service aliases to allow referring to
     services by names rather than static IP addresses.
-
-  /interface/Dockerfile
-
-    The base Dockerfile to containerise the Go application.
-
-  /rabbitmq-web-mqtt/Dockerfile
-
-    The base Dockerfile to containerise rabbitmq configured with MQTT and
-    websockets.
-
-  /web-customer/Dockerfile
-
-    The base Dockerfile to containerise the Node.js application.
-
-  /web-staff/Dockerfile
-
-    The base Dockerfile to containerise the static webpage.
 
 
 
@@ -179,12 +189,12 @@ Device control:  I have programmed a simple graphical interface for the nrf52
                  device and made use of the joystick and buttons on the mbed
                  application shield to control the interface.
 
-
 Robust system:   Retries with exponential backoffs have been used when
                  connecting to databases in the Go application (interface).
                  When starting all components simultatiously, sometimes the
                  databases will take longer to start up and retrying the
-                 connection is preferable to crashing.
+                 connection automatically is preferable to crashing/manually
+                 waiting.
 
 
 
