@@ -13,9 +13,9 @@ interface for marking items in the list as collected, and to call for assistance
 from a shop assistant.
 
 If help is requested from a shop assistant, the device will broadcast it's
-location to a web service that assistants can monitor. When help is requested
+location to a web service that assistants can monitor. When help is requested,
 the device information is presented and if the customer moves about in the
-store, the location will update in real time.
+store, the location will update live.
 
 
 
