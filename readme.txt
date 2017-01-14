@@ -5,7 +5,7 @@ The goal of the project is to build an internet connected shopping list
 application for a supermarket or similar store.
 
 A customer registers their loyalty card (e.g. a nectar or tesco clubcard)
-online, and enters in their weekly shopping list.
+online, and enters in their shopping list.
 
 On arrival to a store they're able to pick up a shopping list device, tap their
 card and the device will load in their shopping list. The device will provide an
@@ -18,12 +18,14 @@ the device information is presented and if the customer moves about in the
 store, the location will update in real time.
 
 
+
 Project Structure
 =================
 
 The project is split up into various components and makes use of Docker to
 better seperate components and reflect how they would operate in a real-world
 environment.
+
 
 /app
 ----
@@ -49,6 +51,7 @@ Libraries:
   - developer.mbed.org/users/chris/code/C12832/#7de323fa46fe
   - developer.mbed.org/users/dotnfc/code/LibPN532/#b5922b3b3257
   - github.com/ARMmbed/mbed-os/#cb930e748230d9ccb287629d2eb603baaf63e88a
+
 
 /interface:
 -----------
@@ -85,10 +88,12 @@ Libraries:
   - github.com/tarm/serial
   - github.com/yosssi/gmq/mqtt
 
+
 /rabbitmq-web-mqtt
 ------------------
 
 A Dockerfile and websocket plugin for running mqtt with rabbitmq with docker.
+
 
 /web-customer
 -------------
@@ -96,14 +101,29 @@ A Dockerfile and websocket plugin for running mqtt with rabbitmq with docker.
 A Node.js application for the customer-facing web service allowing people to
 register their loyalty card and shopping lists.
 
+
 /web-staff
 ----------
 
 A static staff-facing web service for monitoring alerts for customers requesting
 help.
 
+Files:
 
-Optional Categories for Marking (1)
+  /web-staff/index.html
+    Main web page for monitoring help requests
+
+  /web-staff/javascripts/help.js
+    JavaScript for connecting to rabbitmq using MQTT over websockets, handling
+    help request state, and manipulating the DOM.
+
+Libraries:
+
+  - https://jquery.com/
+  - https://github.com/mqttjs/MQTT.js
+
+
+Optional Categories for Marking (2)
 ===================================
 
 Device control:  I have programmed a simple graphical interface for the nrf52
@@ -111,3 +131,8 @@ Device control:  I have programmed a simple graphical interface for the nrf52
                  application shield to control the interface.
 
 
+Robust system:   Retries with exponential backoffs have been used when
+                 connecting to databases in the Go application (interface).
+                 When starting all components simultatiously, sometimes the
+                 databases will take longer to start up and retrying the
+                 connection is preferable to crashing.
