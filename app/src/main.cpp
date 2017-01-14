@@ -7,6 +7,8 @@
 I2C i2c(I2C_SDA0, I2C_SCL0);
 Serial host(USBTX, USBRX);
 
+InterruptIn helpButton(BUTTON1);
+
 volatile int ready = 0;
 volatile int authorised = -1;
 
@@ -69,8 +71,15 @@ void serialInterrupt() {
     __enable_irq();
 }
 
+void requestHelp() {
+    host_writeln("HELP:-");
+}
+
 int main() {
     host.attach(&serialInterrupt);
+
+    // trigger help request interrupt when button is pressed
+    helpButton.rise(&requestHelp);
 
     display_message("WAITING FOR HANDSHAKE");
     while (!ready) {}
