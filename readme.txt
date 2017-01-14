@@ -48,9 +48,9 @@ Files:
 
 Libraries:
 
-  - https://developer.mbed.org/users/chris/code/C12832/#7de323fa46fe
-  - https://developer.mbed.org/users/dotnfc/code/LibPN532/#b5922b3b3257
-  - https://github.com/ARMmbed/mbed-os/#cb930e748230d9ccb287629d2eb603baaf63e88a
+  - https://developer.mbed.org/users/chris/code/C12832
+  - https://developer.mbed.org/users/dotnfc/code/LibPN532
+  - https://github.com/ARMmbed/mbed-os
 
 
 /interface:
@@ -119,8 +119,9 @@ Files:
 
 Libraries:
 
-  - https://jquery.com/
+  - https://jquery.com
   - https://github.com/mqttjs/MQTT.js
+
 
 
 Optional Categories for Marking (2)
@@ -136,3 +137,10 @@ Robust system:   Retries with exponential backoffs have been used when
                  When starting all components simultatiously, sometimes the
                  databases will take longer to start up and retrying the
                  connection is preferable to crashing.
+
+
+
+Project Video Demo
+==================
+
+A video demo of the project is available from: [VIDEO URL]
