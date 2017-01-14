@@ -19,7 +19,9 @@ store, the location will update in real time.
 
 ## Project Structure
 
-The project is split up into various components:
+The project is split up into various components and makes use of Docker to
+better seperate components and reflect how they would operate in a real-world
+environment.
 
 ### `/app`
 An mbed application that is flashed to the nrf52 hardware
@@ -35,7 +37,3 @@ A Node.js application for the customer-facing web service allowing people to reg
 
 ### `/web-staff`
 A static staff-facing web service for monitoring alerts for customers requesting help
-
-The project makes use of docker to better seperate components and reflect how
-these components would operate in a real-world environment.
-
