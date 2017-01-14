@@ -48,9 +48,9 @@ Files:
 
 Libraries:
 
-  - developer.mbed.org/users/chris/code/C12832/#7de323fa46fe
-  - developer.mbed.org/users/dotnfc/code/LibPN532/#b5922b3b3257
-  - github.com/ARMmbed/mbed-os/#cb930e748230d9ccb287629d2eb603baaf63e88a
+  - https://developer.mbed.org/users/chris/code/C12832/#7de323fa46fe
+  - https://developer.mbed.org/users/dotnfc/code/LibPN532/#b5922b3b3257
+  - https://github.com/ARMmbed/mbed-os/#cb930e748230d9ccb287629d2eb603baaf63e88a
 
 
 /interface:
@@ -83,10 +83,10 @@ Files:
 
 Libraries:
 
-  - github.com/cenkalti/backoff
-  - github.com/lib/pq
-  - github.com/tarm/serial
-  - github.com/yosssi/gmq/mqtt
+  - https://github.com/cenkalti/backoff
+  - https://github.com/lib/pq
+  - https://github.com/tarm/serial
+  - https://github.com/yosssi/gmq/mqtt
 
 
 /rabbitmq-web-mqtt
