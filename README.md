@@ -27,13 +27,16 @@ environment.
 An mbed application that is flashed to the nrf52 hardware
 
 ### `/interface`
-A Go application that runs on a host computer interacting with the IoT hardware over serial
+A Go application that runs on a host computer interacting with the IoT hardware
+over serial
 
 ### `/rabbitmq-web-mqtt`
 A Dockerfile and websocket plugin for running mqtt with rabbitmq with docker
 
 ### `/web-customer`
-A Node.js application for the customer-facing web service allowing people to register their loyalty card and shopping lists
+A Node.js application for the customer-facing web service allowing people to
+register their loyalty card and shopping lists
 
 ### `/web-staff`
-A static staff-facing web service for monitoring alerts for customers requesting help
+A static staff-facing web service for monitoring alerts for customers requesting
+help
