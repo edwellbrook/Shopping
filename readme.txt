@@ -132,7 +132,42 @@ Files:
 
     The base Dockerfile to containerise the Node.js application.
 
+  package.json
+
+    Node.js project configuration file.
+
+  app.js
+
+    Main entrypoint to webserver
+
+  bin/www
+
+    Startup script
+
+  public/stylesheets/style.css
+
+    CSS for webpages
+
+  routes/index.js
+
+    Routing and request handling for webserver
+
+  views/*.ejs
+
+    HTML templates/responses
+
 Libraries:
+
+  - https://www.npmjs.com/package/bcrypt
+  - https://www.npmjs.com/package/body-parser
+  - https://www.npmjs.com/package/cookie-parser
+  - https://www.npmjs.com/package/debug
+  - https://www.npmjs.com/package/ejs
+  - https://www.npmjs.com/package/express
+  - https://www.npmjs.com/package/express-session
+  - https://www.npmjs.com/package/morgan
+  - https://www.npmjs.com/package/pg
+  - https://www.npmjs.com/package/pg-pool
 
 
 /web-staff
