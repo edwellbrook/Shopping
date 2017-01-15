@@ -11,6 +11,7 @@ InterruptIn helpButton(BUTTON1);
 
 volatile int ready = 0;
 volatile int authorised = -1;
+char items[MAX_ITEMS][FRAME_WIDTH + 1];
 
 bool auth(uint8_t uid[7]) {
     host.printf("AUTH:%s\r\n", uid);
@@ -51,21 +52,43 @@ void serialInterrupt() {
     if (strncmp(str, "RESET", 5) == 0) {
         NVIC_SystemReset();
     }
-    // auth response, failed auth
+    // auth response, declined
     else if (strncmp(str, "AUTH0", 5) == 0) {
         authorised = 0;
     }
-    // auth response, succeeded auth
+    // auth response, accepted
     else if (strncmp(str, "AUTH1", 5) == 0) {
         authorised = 1;
     }
-    // host interface accepted handshake and is ready
-    else if (strncmp(str, "READY", 5) == 0) {
+    // load shopping list
+    else if (strncmp(str, "LLOAD", 5) == 0) {
+        host_writeln("loading shit:");
+
+        int i = 0;
+        // load in each item
+        while(i < MAX_ITEMS) {
+            int j = 0;
+            // load in each character of the item name
+            while (j < FRAME_WIDTH + 1) {
+                char c = host.getc();
+                items[i][j] = c;
+
+                host.printf("%c", c);
+
+                // end list item with null terminator
+                if (c == 0) {
+                    host.printf("\r\n");
+                    break;
+                }
+
+                j += 1;
+            }
+
+            i += 1;
+        }
+
+        // tell program the list is ready
         ready = 1;
-    }
-    // echo the data back
-    else {
-        host.printf("ECHO:%s\r\n", str);
     }
 
     __enable_irq();
@@ -76,29 +99,23 @@ void requestHelp() {
 }
 
 int main() {
+    // interrupt on serial data
     host.attach(&serialInterrupt);
 
-    // trigger help request interrupt when button is pressed
+    // interrupt when help button is pressed
     helpButton.rise(&requestHelp);
 
-    display_message("WAITING FOR HANDSHAKE");
+    // host_writeln("INFO:Scanning for NFC card");
+    // display_message("PLEASE SCAN YOUR CARD");
+    // nfc_start(i2c, auth);
+    // host_writeln("INFO:NFC card found and authorised");
+    //
+    // host_writeln("INFO:Scanning for beacons\r\n");
+    // ble_start(sendBeacons);
+    // host_writeln("INFO:Ending beacon scan");
+
+
+    // wait until list is ready
     while (!ready) {}
-
-    // host_writeln("INIT");
-    host_writeln("INFO:Scanning for NFC card");
-    display_message("PLEASE SCAN YOUR CARD");
-    nfc_start(i2c, auth);
-    host_writeln("INFO:NFC card found and authorised");
-
-    host_writeln("INFO:Scanning for beacons\r\n");
-    ble_start(sendBeacons);
-    host_writeln("INFO:Ending beacon scan");
-
-    // char items[][FRAME_WIDTH + 1] = {
-    //     "CHEESE",
-    //     "TUNA",
-    //     "BACON",
-    //     "SPAGHETTI",
-    //     "BUTTER"
-    // };
+    shopping_list_start(items);
 }
