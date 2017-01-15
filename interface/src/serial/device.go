@@ -1,8 +1,7 @@
-package serial_device
+package serial
 
 import (
 	"bufio"
-	"serial_api"
 	"time"
 
 	"github.com/cenkalti/backoff"
@@ -32,7 +31,7 @@ func (s *Device) Open() (err error) {
 	}, b)
 }
 
-func (s *Device) Read() (*serial_api.Response, error) {
+func (s *Device) Read() (*Response, error) {
 	if s.reader == nil {
 		s.reader = bufio.NewReader(s.port)
 	}
@@ -42,14 +41,14 @@ func (s *Device) Read() (*serial_api.Response, error) {
 		return nil, err
 	}
 
-	return serial_api.NewResponse(line), nil
+	return newResponse(line), nil
 }
 
 func (s *Device) Authorise(b bool) {
 	if b == true {
-		s.Write([]byte("AUTH1"))
+		s.write([]byte("AUTH1"))
 	} else {
-		s.Write([]byte("AUTH0"))
+		s.write([]byte("AUTH0"))
 	}
 }
 
@@ -57,15 +56,10 @@ func (s *Device) SendList(list [12]string) {
 	s.port.Write([]byte("LLOAD"))
 
 	for _, item := range list {
-		s.port.Write(append([]byte(item), 0))
+		s.write(append([]byte(item), 0))
 	}
 }
 
-func (s *Device) Write(data []byte) {
+func (s *Device) write(data []byte) {
 	s.port.Write(data)
-}
-
-func (s *Device) Reset() error {
-	s.port.Close()
-	return s.Open()
 }

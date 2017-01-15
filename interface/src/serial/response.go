@@ -1,4 +1,4 @@
-package serial_api
+package serial
 
 import (
 	"strings"
@@ -20,9 +20,6 @@ const (
 	// system has logged information
 	INFO = "INFO"
 
-	// system is echoing handshake bytes
-	ECHO = "ECHO"
-
 	// delimitter
 	DELIMITTER = ":"
 )
@@ -33,7 +30,7 @@ type Response struct {
 	Args []string
 }
 
-func NewResponse(raw []byte) *Response {
+func newResponse(raw []byte) *Response {
 	r := &Response{Raw: raw}
 	r.parseRaw()
 	return r

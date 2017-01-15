@@ -7,8 +7,7 @@ import (
 	"strings"
 	"sync"
 
-	api "serial_api"
-	serial "serial_device"
+	"serial"
 )
 
 func authoriseCard(cardId string) bool {
@@ -30,8 +29,8 @@ func authoriseCard(cardId string) bool {
 	}
 }
 
-func foundBeacon(beaconId string) {
-	log.Printf("Found beacon: %s", beaconId)
+func publishHelp(cardId string, beaconId string) {
+	publishMessage(MQTTMessage{"/help", []byte(beaconId)})
 }
 
 func loadShoppingList(cardId string) [12]string {
@@ -52,30 +51,30 @@ func loadShoppingList(cardId string) [12]string {
 	return res
 }
 
-func processSerialResponse(device *serial.Device, r *api.Response) {
+func processSerialResponse(device *serial.Device, r *serial.Response) {
 	switch r.Type {
-	case api.INIT:
+	case serial.INIT:
 		log.Println("Application starting")
 
-	case api.INFO:
+	case serial.INFO:
 		msg := strings.Join(r.Args, " ")
 		log.Println(msg)
 
-	case api.AUTH:
+	case serial.AUTH:
 		if len(r.Args) == 1 {
 			cardId := hex.EncodeToString([]byte(r.Args[0]))
-			go func() {
-				success := authoriseCard(cardId)
-				device.Authorise(success)
-			}()
+			success := authoriseCard(cardId)
+			device.Authorise(success)
 		}
 
-	case api.HELP:
-		if len(r.Args) == 1 {
-			foundBeacon(r.Args[0])
+	case serial.HELP:
+		if len(r.Args) == 2 {
+			beaconId := hex.EncodeToString([]byte(r.Args[0]))
+			cardId := hex.EncodeToString([]byte(r.Args[1]))
+			publishHelp(cardId, beaconId)
 		}
 
-	case api.LIST:
+	case serial.LIST:
 		if len(r.Args) == 1 {
 			cardId := hex.EncodeToString([]byte(r.Args[0]))
 			list := loadShoppingList(cardId)
@@ -128,14 +127,4 @@ func main() {
 
 		processSerialResponse(device, response)
 	}
-
-	// for {
-	// 	select {
-	// 	case response := <-serialChan:
-	// 		log.Println(response)
-	// 		processSerial(response)
-	// 	case message := <-mqttChan:
-	// 		publishMessage(message)
-	// 	}
-	// }
 }
