@@ -11,6 +11,7 @@ InterruptIn helpButton(BUTTON1);
 
 volatile int ready = 0;
 volatile int authorised = -1;
+char cardId[7];
 char items[MAX_ITEMS][FRAME_WIDTH + 1];
 
 bool auth(uint8_t uid[7]) {
@@ -21,6 +22,11 @@ bool auth(uint8_t uid[7]) {
 
     bool authed = authorised;
     authorised = -1;
+
+
+    if (authed) {
+        sprintf(cardId, "%s", uid);
+    }
 
     return authed;
 }
@@ -109,6 +115,7 @@ int main() {
     host_writeln("INFO:NFC card found and authorised");
 
     display_message("LOADING SHOPPING LIST");
+    host.printf("LIST:%s\r\n", cardId);
     // wait until list is ready
     while (!ready) {}
     host_writeln("INFO:Shopping list loaded");

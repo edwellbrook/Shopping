@@ -2,9 +2,6 @@ package serial_device
 
 import (
 	"bufio"
-	"crypto/rand"
-	"errors"
-	"fmt"
 	"serial_api"
 	"time"
 
@@ -25,46 +22,21 @@ func NewDevice(name string) *Device {
 	}}
 }
 
-func (s *Device) handshake() (err error) {
-	// set up new reader
-	s.reader = bufio.NewReader(s.port)
-
-	// generate random bytes
-	checkBytes := make([]byte, 5)
-	rand.Read(checkBytes)
-
-	// send random bytes
-	s.port.Write(checkBytes)
-
-	line, _, err := s.reader.ReadLine()
-	if err != nil {
-		return err
-	}
-
-	if string(line) != fmt.Sprintf("%s%s%s", serial_api.ECHO, serial_api.DELIMITTER, checkBytes) {
-		return errors.New("Echo handshake failed")
-	}
-
-	s.port.Write([]byte("READY"))
-
-	return nil
-}
-
 func (s *Device) Open() (err error) {
 	b := backoff.NewExponentialBackOff()
 	b.MaxElapsedTime = time.Minute
 
 	return backoff.Retry(func() error {
 		s.port, err = serial.OpenPort(s.config)
-		if err != nil {
-			return err
-		}
-
-		return s.handshake()
+		return err
 	}, b)
 }
 
 func (s *Device) Read() (*serial_api.Response, error) {
+	if s.reader == nil {
+		s.reader = bufio.NewReader(s.port)
+	}
+
 	line, _, err := s.reader.ReadLine()
 	if err != nil {
 		return nil, err
@@ -78,6 +50,14 @@ func (s *Device) Authorise(b bool) {
 		s.Write([]byte("AUTH1"))
 	} else {
 		s.Write([]byte("AUTH0"))
+	}
+}
+
+func (s *Device) SendList(list [12]string) {
+	s.port.Write([]byte("LLOAD"))
+
+	for _, item := range list {
+		s.port.Write(append([]byte(item), 0))
 	}
 }
 

@@ -11,8 +11,8 @@ const (
 	// system has requested help
 	HELP = "HELP"
 
-	// system has scanned beacon
-	SCAN = "SCAN"
+	// system has requested shopping list
+	LIST = "LIST"
 
 	// system is authorising card
 	AUTH = "AUTH"

@@ -14,9 +14,9 @@ import (
 func authoriseCard(cardId string) bool {
 	log.Printf("Authorising card: %v\n", cardId)
 
-	var userId int
+	var card string
 
-	err := postgres.QueryRow("SELECT user_id FROM cards WHERE card_id = $1", cardId).Scan(&userId)
+	err := postgres.QueryRow("SELECT id FROM cards WHERE id = $1", cardId).Scan(&card)
 
 	if err == sql.ErrNoRows {
 		publishMessage(MQTTMessage{"/auth/denied", []byte(cardId)})
@@ -32,6 +32,24 @@ func authoriseCard(cardId string) bool {
 
 func foundBeacon(beaconId string) {
 	log.Printf("Found beacon: %s", beaconId)
+}
+
+func loadShoppingList(cardId string) [12]string {
+	var list string
+	var res [12]string
+
+	postgres.QueryRow("SELECT list FROM cards WHERE id = $1", cardId).Scan(&list)
+	l := strings.Trim(list, "{}")
+
+	for i, v := range strings.Split(l, ",") {
+		res[i] = v
+
+		if i == 11 {
+			break
+		}
+	}
+
+	return res
 }
 
 func processSerialResponse(device *serial.Device, r *api.Response) {
@@ -52,9 +70,16 @@ func processSerialResponse(device *serial.Device, r *api.Response) {
 			}()
 		}
 
-	case api.SCAN:
+	case api.HELP:
 		if len(r.Args) == 1 {
 			foundBeacon(r.Args[0])
+		}
+
+	case api.LIST:
+		if len(r.Args) == 1 {
+			cardId := hex.EncodeToString([]byte(r.Args[0]))
+			list := loadShoppingList(cardId)
+			device.SendList(list)
 		}
 
 	default:
