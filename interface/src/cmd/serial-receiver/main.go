@@ -3,12 +3,19 @@ package main
 import (
 	"database/sql"
 	"encoding/hex"
+	"encoding/json"
 	"log"
 	"strings"
 	"sync"
 
 	"serial"
 )
+
+type HelpMessage struct {
+	CardId   string `json:"id"`
+	BeaconId string `json:"beacon"`
+	Location string `json:"location"`
+}
 
 func authoriseCard(cardId string) bool {
 	log.Printf("Authorising card: %v\n", cardId)
@@ -18,10 +25,8 @@ func authoriseCard(cardId string) bool {
 	err := postgres.QueryRow("SELECT id FROM cards WHERE id = $1", cardId).Scan(&card)
 
 	if err == sql.ErrNoRows {
-		publishMessage(MQTTMessage{"/auth/denied", []byte(cardId)})
 		return false
 	} else if err == nil {
-		publishMessage(MQTTMessage{"/auth/accepted", []byte(cardId)})
 		return true
 	} else {
 		log.Printf("Database error: %s\n", err)
@@ -30,7 +35,19 @@ func authoriseCard(cardId string) bool {
 }
 
 func publishHelp(cardId string, beaconId string) {
-	publishMessage(MQTTMessage{"/help", []byte(beaconId)})
+	msg := &HelpMessage{
+		CardId:   cardId,
+		BeaconId: beaconId,
+		Location: beaconId, // will use psql to translate to location
+	}
+
+	data, err := json.Marshal(msg)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	publishMessage(MQTTMessage{"/help", data})
 }
 
 func loadShoppingList(cardId string) [12]string {
@@ -66,8 +83,8 @@ func processSerialResponse(device *serial.Device, r *serial.Response) {
 
 	case serial.HELP:
 		if len(r.Args) == 2 {
-			beaconId := hex.EncodeToString([]byte(r.Args[0]))
-			cardId := hex.EncodeToString([]byte(r.Args[1]))
+			cardId := hex.EncodeToString([]byte(r.Args[0]))
+			beaconId := hex.EncodeToString([]byte(r.Args[1]))
 			publishHelp(cardId, beaconId)
 		}
 
@@ -79,7 +96,7 @@ func processSerialResponse(device *serial.Device, r *serial.Response) {
 		}
 
 	default:
-		log.Printf("Application sent unhandled message: %s\n", r.Type)
+		log.Printf("Application sent unhandled message: %+v\n", r)
 	}
 }
 
