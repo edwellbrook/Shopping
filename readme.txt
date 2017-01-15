@@ -19,8 +19,8 @@ store, the location will update live.
 
 
 
-Project Structure
-=================
+Project Structure & Files
+=========================
 
 The project is split up into various components and makes use of Docker to
 better seperate components and reflect how they would operate in a real-world
