@@ -38,6 +38,26 @@ void host_writeln(const char *message) {
     wait_ms(500); // wait for write to complete
 }
 
+void load_list() {
+    int i = 0;
+    // load in each item
+    while(i < MAX_ITEMS) {
+        int j = 0;
+        // load in each character of the item name
+        while (j < FRAME_WIDTH + 1) {
+            char c = host.getc();
+            items[i][j] = c;
+
+            // end list item with null terminator
+            if (c == 0) {
+                break;
+            }
+            j += 1;
+        }
+        i += 1;
+    }
+}
+
 void serialInterrupt() {
     __disable_irq();
 
@@ -62,32 +82,7 @@ void serialInterrupt() {
     }
     // load shopping list
     else if (strncmp(str, "LLOAD", 5) == 0) {
-        host_writeln("loading shit:");
-
-        int i = 0;
-        // load in each item
-        while(i < MAX_ITEMS) {
-            int j = 0;
-            // load in each character of the item name
-            while (j < FRAME_WIDTH + 1) {
-                char c = host.getc();
-                items[i][j] = c;
-
-                host.printf("%c", c);
-
-                // end list item with null terminator
-                if (c == 0) {
-                    host.printf("\r\n");
-                    break;
-                }
-
-                j += 1;
-            }
-
-            i += 1;
-        }
-
-        // tell program the list is ready
+        load_list();
         ready = 1;
     }
 
@@ -96,6 +91,9 @@ void serialInterrupt() {
 
 void requestHelp() {
     host_writeln("HELP:-");
+    // host_writeln("INFO:Scanning for beacons\r\n");
+    // ble_start(sendBeacons);
+    // host_writeln("INFO:Ending beacon scan");
 }
 
 int main() {
@@ -105,17 +103,14 @@ int main() {
     // interrupt when help button is pressed
     helpButton.rise(&requestHelp);
 
-    // host_writeln("INFO:Scanning for NFC card");
-    // display_message("PLEASE SCAN YOUR CARD");
-    // nfc_start(i2c, auth);
-    // host_writeln("INFO:NFC card found and authorised");
-    //
-    // host_writeln("INFO:Scanning for beacons\r\n");
-    // ble_start(sendBeacons);
-    // host_writeln("INFO:Ending beacon scan");
+    host_writeln("INFO:Scanning for NFC card");
+    display_message("PLEASE SCAN YOUR CARD");
+    nfc_start(i2c, auth);
+    host_writeln("INFO:NFC card found and authorised");
 
-
+    display_message("LOADING SHOPPING LIST");
     // wait until list is ready
     while (!ready) {}
+    host_writeln("INFO:Shopping list loaded");
     shopping_list_start(items);
 }
