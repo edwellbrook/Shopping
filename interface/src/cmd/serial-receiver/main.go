@@ -53,9 +53,6 @@ func loadShoppingList(cardId string) [12]string {
 
 func processSerialResponse(device *serial.Device, r *serial.Response) {
 	switch r.Type {
-	case serial.INIT:
-		log.Println("Application starting")
-
 	case serial.INFO:
 		msg := strings.Join(r.Args, " ")
 		log.Println(msg)

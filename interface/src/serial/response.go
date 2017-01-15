@@ -5,9 +5,6 @@ import (
 )
 
 const (
-	// system has initialised
-	INIT = "INIT"
-
 	// system has requested help
 	HELP = "HELP"
 
