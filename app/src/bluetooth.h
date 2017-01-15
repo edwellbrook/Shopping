@@ -3,8 +3,9 @@
 
 #include "ble/Gap.h"
 
-typedef void (*SendBeaconsFn)(char[]);
+typedef void (*SendBeaconFn)(const uint8_t*);
 
-void ble_start(SendBeaconsFn fn);
+void ble_setup(SendBeaconFn fn);
+void ble_ping();
 
 #endif // !_BLUETOOTH_H_

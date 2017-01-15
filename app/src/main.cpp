@@ -7,10 +7,17 @@
 I2C i2c(I2C_SDA0, I2C_SCL0);
 Serial host(USBTX, USBRX);
 
+// hardware buttons
+DigitalIn joy_up(P0_28);
+DigitalIn joy_down(P0_29);
+DigitalIn joy_in(P0_15);
 InterruptIn helpButton(BUTTON1);
 
+
+volatile int state = 0;
 volatile int ready = 0;
 volatile int authorised = -1;
+volatile bool inHelp = false;
 char cardId[7];
 char items[MAX_ITEMS][FRAME_WIDTH + 1];
 
@@ -31,12 +38,11 @@ bool auth(uint8_t uid[7]) {
     return authed;
 }
 
-void sendBeacons(char beaconId[]) {
-    host.printf("SCAN:");
-    for (int i = 0; i < 12; i++) {
-        host.printf("%c", beaconId[i]);
-    }
-    host.printf("\r\n");
+void sendBeacons(const uint8_t *beacon) {
+    char beaconId[Gap::ADDR_LEN];
+    memcpy(beaconId, beacon, Gap::ADDR_LEN);
+
+    host.printf("HELP:%s:%s\r\n", cardId, beaconId);
 }
 
 void host_writeln(const char *message) {
@@ -96,28 +102,67 @@ void serialInterrupt() {
 }
 
 void requestHelp() {
-    host_writeln("HELP:-");
-    // host_writeln("INFO:Scanning for beacons\r\n");
-    // ble_start(sendBeacons);
-    // host_writeln("INFO:Ending beacon scan");
+    inHelp = !inHelp;
+
+    state = inHelp ? 3 : 2;
+
+    if (state == 2) {
+        display_update();
+    }
 }
 
 int main() {
+
+    // set up bluetooth scanner
+    ble_setup(sendBeacons);
     // interrupt on serial data
     host.attach(&serialInterrupt);
-
     // interrupt when help button is pressed
     helpButton.rise(&requestHelp);
 
-    host_writeln("INFO:Scanning for NFC card");
-    display_message("PLEASE SCAN YOUR CARD");
-    nfc_start(i2c, auth);
-    host_writeln("INFO:NFC card found and authorised");
+    while (true) {
+        switch (state) {
 
-    display_message("LOADING SHOPPING LIST");
-    host.printf("LIST:%s\r\n", cardId);
-    // wait until list is ready
-    while (!ready) {}
-    host_writeln("INFO:Shopping list loaded");
-    shopping_list_start(items);
+            case 0: { // scanning for card
+                host_writeln("INFO:Scanning for NFC card");
+                display_message("PLEASE SCAN YOUR CARD");
+                nfc_start(i2c, auth);
+
+                state += 1;
+                host_writeln("INFO:NFC card found and authorised");
+                break;
+            }
+
+            case 1: { // loading shopping list
+                display_message("LOADING SHOPPING LIST");
+                host.printf("LIST:%s\r\n", cardId);
+                while (!ready) {}
+
+                state += 1;
+                shopping_list_start(items);
+                break;
+            }
+
+            case 2: { // shopping
+                if (!!joy_up) {
+                    display_cursor_up();
+                    display_update();
+                } else if (!!joy_down) {
+                    display_cursor_down();
+                    display_update();
+                } else if (!!joy_in) {
+                    display_toggle_item();
+                    display_update();
+                }
+                break;
+            }
+
+            case 3: {
+                host_writeln("INFO:Scanning for beacons");
+                display_message("REQUESTING HELP");
+                ble_ping();
+                break;
+            }
+        }
+    }
 }

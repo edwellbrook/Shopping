@@ -2,20 +2,15 @@
 #include "ble/BLE.h"
 #include <stdio.h>
 
-SendBeaconsFn sendBeacons;
+SendBeaconFn sendBeacon;
+BLE *ble;
 
 void scan(const Gap::AdvertisementCallbackParams_t *params) {
     if (params->rssi < -40) {
         return;
     }
 
-    char address[Gap::ADDR_LEN * 2];
-
-    for (int i = Gap::ADDR_LEN - 1; i >= 0; i--) {
-        sprintf(&address[i * 2], "%2.2x", params->peerAddr[i]);
-    }
-
-    sendBeacons(address);
+    sendBeacon(params->peerAddr);
 }
 
 void init(BLE::InitializationCompleteCallbackContext *params) {
@@ -25,13 +20,13 @@ void init(BLE::InitializationCompleteCallbackContext *params) {
     ble.gap().startScan(scan);
 }
 
-void ble_start(SendBeaconsFn fn) {
-    sendBeacons = fn;
+void ble_setup(SendBeaconFn fn) {
+    sendBeacon = fn;
 
-    BLE &ble = BLE::Instance();
-    ble.init(init);
+    ble = &BLE::Instance();
+    ble->init(init);
+}
 
-    while (true) {
-        ble.processEvents();
-    }
+void ble_ping() {
+    ble->processEvents();
 }

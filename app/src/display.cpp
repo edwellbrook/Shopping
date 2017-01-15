@@ -2,10 +2,6 @@
 
 C12832 lcd(P0_23, P0_25, P0_24, P0_18, P0_22);
 
-DigitalIn joy_up(P0_28);
-DigitalIn joy_down(P0_29);
-DigitalIn joy_in(P0_15);
-
 // cursor position
 volatile int cursor = 0;
 
@@ -23,7 +19,7 @@ void display_message(const char msg[]) {
     lcd.printf(msg);
 }
 
-void update_display() {
+void display_update() {
     lcd.cls();
 
     for (int i = 0; i < 3; i++) {
@@ -40,32 +36,24 @@ void update_display() {
     }
 }
 
-void cursorDown() {
+void display_cursor_down() {
     if (cursor < 2) {
         cursor += 1;
     } else if (cursor == 2 && offset + 3 < MAX_ITEMS) {
         offset += 1;
     }
-
-    update_display();
 }
 
-void cursorUp() {
+void display_cursor_up() {
     if (cursor > 0) {
         cursor -= 1;
     } else if (cursor == 0 && offset - 1 >= 0) {
         offset -= 1;
     }
-
-    update_display();
 }
 
-void toggleItem() {
-    display_message("SHIT");
-
+void display_toggle_item() {
     checklist[cursor + offset] = !checklist[cursor + offset];
-
-    update_display();
 }
 
 void shopping_list_start(const char items[MAX_ITEMS][FRAME_WIDTH + 1]) {
@@ -74,15 +62,5 @@ void shopping_list_start(const char items[MAX_ITEMS][FRAME_WIDTH + 1]) {
         strncpy(list[i], items[i], FRAME_WIDTH + 1);
     }
 
-    update_display();
-
-    while (true) {
-        if (!!joy_up) {
-            cursorUp();
-        } else if (!!joy_down) {
-            cursorDown();
-        } else if (!!joy_in) {
-            toggleItem();
-        }
-    }
+    display_update();
 }
