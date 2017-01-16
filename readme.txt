@@ -86,12 +86,12 @@ Files:
 
     Functions for interacting with rabbitmq over mqtt protocol.
 
-  src/serial_api/serial_api.go
+  src/serial/response.go
 
     Functions for defining and parsing the custom API for communicating over a
     serial port.
 
-  src/serial_device/serial_device.go
+  src/serial/device.go
 
     Wrapper around serial port to abstract away implementation details.
 
