@@ -2,7 +2,7 @@ var requests = {}
 
 window.setInterval(function() {
   var d = new Date()
-  d.setSeconds(d.getSeconds() - 10)
+  d.setSeconds(d.getSeconds() - 25)
 
   Object.keys(requests).forEach(function(id) {
     var req = requests[id]

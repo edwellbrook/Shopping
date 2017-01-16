@@ -14,3 +14,7 @@ CREATE TABLE IF NOT EXISTS locations (
 
   CONSTRAINT locations_id_key PRIMARY KEY (id)
 );
+
+-- add beacon locations to database
+INSERT INTO locations VALUES ("5fbbb1d63bc5", "DAIRY ISLE");
+INSERT INTO locations VALUES ("9746e3c146f7", "BAKERY");

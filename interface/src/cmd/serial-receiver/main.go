@@ -35,10 +35,19 @@ func authoriseCard(cardId string) bool {
 }
 
 func publishHelp(cardId string, beaconId string) {
+	log.Println(beaconId)
+
+	var location string
+	postgres.QueryRow("SELECT name FROM locations WHERE id = $1", beaconId).Scan(&location)
+
+	if location == "" {
+		return
+	}
+
 	msg := &HelpMessage{
 		CardId:   cardId,
 		BeaconId: beaconId,
-		Location: beaconId, // will use psql to translate to location
+		Location: location,
 	}
 
 	data, err := json.Marshal(msg)
