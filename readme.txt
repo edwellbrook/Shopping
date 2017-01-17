@@ -236,4 +236,5 @@ Robust system:   Retries with exponential backoffs have been used when
 Project Video Demo
 ==================
 
-A video demo of the project is available from: [VIDEO URL]
+A video demo of the project is available from:
+https://dl.dropboxusercontent.com/u/4034363/iot-demo.mp4
