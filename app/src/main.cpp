@@ -4,6 +4,8 @@
 #include "nfc.h"
 #include "display.h"
 
+enum State { SCANNING, LOADING, SHOPPING, HELP };
+
 I2C i2c(I2C_SDA0, I2C_SCL0);
 Serial host(USBTX, USBRX);
 
@@ -14,7 +16,7 @@ DigitalIn joy_in(P0_15);
 InterruptIn helpButton(BUTTON1);
 
 
-volatile int state = 0;
+volatile State state = SCANNING;
 volatile int ready = 0;
 volatile int authorised = -1;
 volatile bool inHelp = false;
@@ -104,9 +106,9 @@ void serialInterrupt() {
 void requestHelp() {
     inHelp = !inHelp;
 
-    state = inHelp ? 3 : 2;
+    state = inHelp ? HELP : SHOPPING;
 
-    if (state == 2) {
+    if (state == SHOPPING) {
         display_update();
     }
 }
@@ -123,27 +125,27 @@ int main() {
     while (true) {
         switch (state) {
 
-            case 0: { // scanning for card
+            case SCANNING: { // scanning for card
                 host_writeln("INFO:Scanning for NFC card");
                 display_message("PLEASE SCAN YOUR CARD");
                 nfc_start(i2c, auth);
 
-                state += 1;
+                state = LOADING;
                 host_writeln("INFO:NFC card found and authorised");
                 break;
             }
 
-            case 1: { // loading shopping list
+            case LOADING: { // loading shopping list
                 display_message("LOADING SHOPPING LIST");
                 host.printf("LIST:%s\r\n", cardId);
                 while (!ready) {}
 
-                state += 1;
+                state = SHOPPING;
                 shopping_list_start(items);
                 break;
             }
 
-            case 2: { // shopping
+            case SHOPPING: { // shopping
                 if (!!joy_up) {
                     display_cursor_up();
                     display_update();
@@ -157,7 +159,7 @@ int main() {
                 break;
             }
 
-            case 3: {
+            case HELP: {
                 host_writeln("INFO:Scanning for beacons");
                 display_message("REQUESTING HELP");
                 ble_ping();
