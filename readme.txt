@@ -23,17 +23,17 @@ Marking Areas
 =============
 
 Completeness:     Although the plan was stripped down a little from what was
-                  orignally proposed, the core ideas and technologies have still
-                  been used. Within the revised plan, everything was built as I
-                  wanted however if I were to continue building out the project
-                  I would look into ways of allowing the mbed device to
+                  originally proposed, the core ideas and technologies have
+                  still been used. Within the revised plan, everything was built
+                  as I wanted however if I were to continue building out the
+                  project I would look into ways of allowing the mbed device to
                   communicate wirelessly with the host system instead of just
                   over serial.
 
-Coding:           Use of Docker to seperate components to better simulate real-
+Coding:           Use of Docker to separate components to better simulate real-
                   world use. All components compile without errors. Each
-                  component follows common programming patterns for the lanuage
-                  used (C++, node.js, Go). Could definately use better comments
+                  component follows common programming patterns for the language
+                  used (C++, node.js, Go). Could definitely use better comments
                   across the whole project.
 
 Data Collection:  Customers are able to input their shopping list into the
@@ -65,7 +65,7 @@ Project Structure & Files
 =========================
 
 The project is split up into various components and makes use of Docker to
-better seperate components and reflect how they would operate in a real-world
+better separate components and reflect how they would operate in a real-world
 environment.
 
 
@@ -165,7 +165,7 @@ Libraries:
 /web-customer
 -------------
 
-A Node.js application for the customer-facing web service allowing people to
+A node.js application for the customer-facing web service allowing people to
 register their loyalty card and shopping lists.
 
 Files:
@@ -268,7 +268,7 @@ Device control:  I have programmed a simple graphical interface for the nrf52
 
 Robust system:   Retries with exponential backoffs have been used when
                  connecting to databases in the Go application (interface).
-                 When starting all components simultatiously, sometimes the
+                 When starting all components simultaneously, sometimes the
                  databases will take longer to start up and retrying the
                  connection automatically is preferable to crashing/manually
                  waiting.
