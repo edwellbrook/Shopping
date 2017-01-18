@@ -4,6 +4,8 @@
 #include "nfc.h"
 #include "display.h"
 
+// type for assigning the state the application is in
+// throughout the running of the device the app will move through various states
 enum State { SCANNING, LOADING, SHOPPING, HELP };
 
 I2C i2c(I2C_SDA0, I2C_SCL0);
@@ -15,7 +17,7 @@ DigitalIn joy_down(P0_29);
 DigitalIn joy_in(P0_15);
 InterruptIn helpButton(BUTTON1);
 
-
+// state
 volatile State state = SCANNING;
 volatile int ready = 0;
 volatile int authorised = -1;
@@ -23,6 +25,7 @@ volatile bool inHelp = false;
 char cardId[7];
 char items[MAX_ITEMS][FRAME_WIDTH + 1];
 
+// function for sending and receiving auth request/response
 bool auth(uint8_t uid[7]) {
     host.printf("AUTH:%s\r\n", uid);
 
@@ -40,6 +43,7 @@ bool auth(uint8_t uid[7]) {
     return authed;
 }
 
+// funtion to be called when a bluetooth beacon is detected
 void sendBeacons(const uint8_t *beacon) {
     char beaconId[Gap::ADDR_LEN];
     memcpy(beaconId, beacon, Gap::ADDR_LEN);
@@ -47,11 +51,13 @@ void sendBeacons(const uint8_t *beacon) {
     host.printf("HELP:%s:%s\r\n", cardId, beaconId);
 }
 
+// helper for sending data to host via serial
 void host_writeln(const char *message) {
     host.printf("%s\r\n", message);
     wait_ms(500); // wait for write to complete
 }
 
+// load in shopping list through serial
 void load_list() {
     int i = 0;
     // load in each item
@@ -72,6 +78,7 @@ void load_list() {
     }
 }
 
+// handle data being sent in via serial
 void serialInterrupt() {
     __disable_irq();
 
@@ -103,13 +110,16 @@ void serialInterrupt() {
     __enable_irq();
 }
 
+// handle help request button being pushed
+// will toggle the help request state
 void requestHelp() {
     inHelp = !inHelp;
 
-    state = inHelp ? HELP : SHOPPING;
-
-    if (state == SHOPPING) {
+    if (inHelp) {
+        state = HELP;
         display_update();
+    } else {
+        state = SHOPPING;
     }
 }
 
