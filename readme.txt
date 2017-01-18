@@ -19,6 +19,48 @@ store, the location will update live.
 
 
 
+Marking Areas
+=============
+
+Completeness:     Although the plan was stripped down a little from what was
+                  orignally proposed, the core ideas and technologies have still
+                  been used. Within the revised plan, everything was built as I
+                  wanted however if I were to continue building out the project
+                  I would look into ways of allowing the mbed device to
+                  communicate wirelessly with the host system instead of just
+                  over serial.
+
+Coding:           Use of Docker to seperate components to better simulate real-
+                  world use. All components compile without errors. Each
+                  component follows common programming patterns for the lanuage
+                  used (C++, node.js, Go). Could definately use better comments
+                  across the whole project.
+
+Data Collection:  Customers are able to input their shopping list into the
+                  database where it will then be transferred to the mbed device
+                  when "tapping in" their NFC card.
+
+Actuation:        When help is requested the device continually pings its
+                  location providing a feed of help requests live-updating as a
+                  a customer moves around the store. There is two way
+                  communication between the host computer and the mbed device
+                  so that the shopping list can be loaded live from the
+                  database.
+
+Visualisation:    Built two web apps (staff and customer) for composing shopping
+                  list and monitoring help requests respectively. Built an
+                  interactive graphical user interface on the mbed device.
+
+Processing:       Some processing in the mbed application for filtering out
+                  bluetooth beacons that aren't in a close enough range. Some
+                  processing in staff web app for timing-out help requests. Some
+                  processing in translating a bluetooth beacon id into a human-
+                  readable location.
+
+Video:            Uploaded to Dropbox, link at end of readme. Run-time: 7m 13s.
+
+
+
 Project Structure & Files
 =========================
 
